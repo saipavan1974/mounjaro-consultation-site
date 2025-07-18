@@ -3,49 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PharmaLogic Weight Loss Consultation</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <title>PharmaLogic - Weight Loss Consultation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>AOS.init();</script>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-100 font-sans">
 
-  <!-- Header -->
-  <header class="bg-blue-800 text-white p-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">PharmaLogic</h1>
-    <nav>
-      <a href="index.html" class="text-white font-semibold hover:underline">Home</a>
-    </nav>
+  <header class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">PharmaLogic</h1>
+    <nav><a href="index.html" class="font-semibold">Home</a></nav>
   </header>
 
-  <!-- Hero Section -->
-  <section class="bg-blue-100 text-center py-12 px-4" data-aos="fade-up">
+  <section class="text-center bg-blue-100 py-16 px-4" data-aos="fade-up">
     <h2 class="text-4xl font-bold text-blue-900 mb-4">Weight Loss Medication Consultation</h2>
-    <p class="text-lg text-gray-700 mb-6 max-w-xl mx-auto">Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.</p>
-    <a href="#consultation" class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 text-lg transition">Start Consultation</a>
+    <p class="text-lg mb-6 text-gray-700">Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.</p>
+    <a href="consultation.html">
+      <button class="bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-6 py-3 rounded-md">
+        Start Consultation
+      </button>
+    </a>
   </section>
 
-  <!-- How It Works -->
-  <section class="bg-white py-16 px-6" id="how-it-works">
-    <h3 class="text-3xl text-center font-semibold text-blue-900 mb-10" data-aos="fade-up">How It Works in 3 Easy Steps</h3>
-    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-      <div class="text-center p-6 bg-blue-50 rounded-lg shadow" data-aos="fade-up" data-aos-delay="100">
-        <img src="https://img.icons8.com/ios-filled/100/000000/survey.png" class="mx-auto mb-4" alt="Survey Icon" />
-        <h4 class="text-xl font-semibold text-blue-800 mb-2">1. Medical Questionnaire</h4>
-        <p>Answer secure medical and lifestyle questions online.</p>
+  <section class="bg-white py-16 px-6" data-aos="fade-up">
+    <h3 class="text-3xl font-bold text-center text-blue-900 mb-10">How It Works in 3 Easy Steps</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+      <div class="bg-blue-50 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="100">
+        <img src="https://img.icons8.com/ios-filled/100/000000/survey.png" alt="Step 1" class="mx-auto mb-4 h-16">
+        <h4 class="text-xl font-semibold mb-2">1. Medical Questionnaire</h4>
+        <p class="text-gray-700">Answer secure medical and lifestyle questions online.</p>
       </div>
-      <div class="text-center p-6 bg-blue-50 rounded-lg shadow" data-aos="fade-up" data-aos-delay="200">
-        <img src="https://img.icons8.com/ios-filled/100/000000/id-verified.png" class="mx-auto mb-4" alt="ID Icon" />
-        <h4 class="text-xl font-semibold text-blue-800 mb-2">2. ID + Video Upload</h4>
-        <p>Upload proof of identity and a short video for verification.</p>
+      <div class="bg-blue-50 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="200">
+        <img src="https://img.icons8.com/ios-filled/100/000000/id-verified.png" alt="Step 2" class="mx-auto mb-4 h-16">
+        <h4 class="text-xl font-semibold mb-2">2. ID + Video Upload</h4>
+        <p class="text-gray-700">Upload proof of identity and a quick video for verification.</p>
       </div>
-      <div class="text-center p-6 bg-blue-50 rounded-lg shadow" data-aos="fade-up" data-aos-delay="300">
-        <img src="https://img.icons8.com/ios-filled/100/000000/doctor-male.png" class="mx-auto mb-4" alt="Doctor Icon" />
-        <h4 class="text-xl font-semibold text-blue-800 mb-2">3. Pharmacist Review & Delivery</h4>
-        <p>Our pharmacist reviews and dispatches your order promptly.</p>
+      <div class="bg-blue-50 p-6 rounded-lg shadow-md" data-aos="fade-up" data-aos-delay="300">
+        <img src="https://img.icons8.com/ios-filled/100/000000/doctor-male.png" alt="Step 3" class="mx-auto mb-4 h-16">
+        <h4 class="text-xl font-semibold mb-2">3. Pharmacist Review & Delivery</h4>
+        <p class="text-gray-700">GPhC-licensed pharmacist reviews and dispatches your order.</p>
       </div>
     </div>
   </section>
+
+  <footer class="bg-blue-800 text-white text-center py-4 mt-10">
+    &copy; 2025 PharmaLogic. Always consult a registered medical professional.
+  </footer>
+
+</body>
+</html>
 
   <!-- Product Strengths -->
   <section class="py-16 bg-gray-100 px-6" id="strengths">
