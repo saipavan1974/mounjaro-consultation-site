@@ -7,15 +7,17 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>AOS.init();</script>
 </head>
 <body class="bg-gray-100 font-sans">
 
   <header class="bg-blue-800 text-white px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-bold">PharmaLogic</h1>
+    <a href="index.html">
+      <img src="logo.jpeg" alt="PharmaLogic Logo" class="h-10">
+    </a>
     <nav><a href="index.html" class="font-semibold">Home</a></nav>
   </header>
 
+  <!-- Hero Section -->
   <section class="text-center bg-blue-100 py-16 px-4" data-aos="fade-up">
     <h2 class="text-4xl font-bold text-blue-900 mb-4">Weight Loss Medication Consultation</h2>
     <p class="text-lg mb-6 text-gray-700">Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.</p>
@@ -26,6 +28,7 @@
     </a>
   </section>
 
+  <!-- How It Works -->
   <section class="bg-white py-16 px-6" data-aos="fade-up">
     <h3 class="text-3xl font-bold text-center text-blue-900 mb-10">How It Works in 3 Easy Steps</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -47,18 +50,10 @@
     </div>
   </section>
 
-  <footer class="bg-blue-800 text-white text-center py-4 mt-10">
-    &copy; 2025 PharmaLogic. Always consult a registered medical professional.
-  </footer>
-
-</body>
-</html>
-
   <!-- Product Strengths -->
   <section class="py-16 bg-gray-100 px-6" id="strengths">
     <h3 class="text-3xl text-center text-blue-900 font-bold mb-10" data-aos="fade-up">Available Mounjaro Strengths</h3>
     <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-      <!-- Repeated cards -->
       <div class="bg-white p-4 rounded shadow text-center" data-aos="zoom-in">
         <img src="https://www.mounjaro.com/content/dam/mounjaro/en/images/mounjaro-2-5-mg-pen.png" class="mx-auto h-40 object-contain mb-2" alt="2.5mg Mounjaro" />
         <p class="text-blue-800 font-semibold">2.5 mg</p>
@@ -86,28 +81,7 @@
     </div>
   </section>
 
-  <!-- Consultation Form -->
-  <section class="py-16 bg-white px-6" id="consultation">
-    <h3 class="text-3xl text-center font-bold text-blue-900 mb-8" data-aos="fade-up">Start Your Consultation</h3>
-    <form action="https://formspree.io/f/mwkglqak" method="POST" class="max-w-2xl mx-auto bg-gray-50 p-6 rounded shadow" data-aos="fade-up" data-aos-delay="200">
-      <label class="block mb-4">
-        <span class="text-gray-700 font-semibold">Full Name</span>
-        <input name="name" type="text" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" />
-      </label>
-      <label class="block mb-4">
-        <span class="text-gray-700 font-semibold">Email Address</span>
-        <input name="email" type="email" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" />
-      </label>
-      <label class="block mb-4">
-        <span class="text-gray-700 font-semibold">Health Concerns</span>
-        <textarea name="message" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"></textarea>
-      </label>
-      <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded transition">
-        Submit Consultation
-      </button>
-    </form>
-  </section>
-
+ 
   <!-- Footer -->
   <footer class="bg-blue-800 text-white text-center p-4 text-sm">
     &copy; 2025 PharmaLogic. Not affiliated with the NHS. Always consult a registered medical professional.
