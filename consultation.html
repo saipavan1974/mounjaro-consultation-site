@@ -147,7 +147,7 @@
       </div>
     </form>
 
-    <!-- Proceed to Payment Section -->
+ <!-- Proceed to Payment (Hidden by default) -->
     <div id="paymentSection" class="text-center mt-6 hidden">
       <p class="text-green-700 font-semibold mb-4">Consultation submitted successfully!</p>
       <a href="payment.html" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
@@ -156,13 +156,12 @@
     </div>
   </div>
 
-  <!-- JS to handle submission -->
   <script>
     const form = document.getElementById('consultationForm');
     const paymentSection = document.getElementById('paymentSection');
 
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
+      e.preventDefault(); // Prevent default form submission
 
       const formData = new FormData(form);
 
@@ -175,8 +174,8 @@
       })
       .then(response => {
         if (response.ok) {
-          form.classList.add('hidden');
-          paymentSection.classList.remove('hidden');
+          form.classList.add('hidden'); // Hide form
+          paymentSection.classList.remove('hidden'); // Show payment button
         } else {
           alert('There was a problem submitting the form. Please try again.');
         }
