@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PharmaLogic - Weight Loss Medication</title>
+  <title>PharmaLogic Weight Loss Consultation</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -13,66 +13,64 @@
       font-family: 'Inter', sans-serif;
     }
     body {
-      background-color: #e9f7ef;
-      color: #1b4332;
+      background-color: #f5f5f5;
+      color: #212529;
     }
     header {
-      background-color: #2d6a4f;
+      background-color: #005eb8;
       padding: 1rem 2rem;
+      color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: white;
     }
     header h1 {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
+      font-weight: 700;
     }
     nav a {
       color: white;
       text-decoration: none;
       margin-left: 1.5rem;
-      font-weight: 500;
+      font-weight: 600;
     }
     .hero {
-      background: linear-gradient(to bottom right, #95d5b2, #d8f3dc);
-      height: 70vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      background-color: #e0f0ff;
+      padding: 3rem 2rem;
       text-align: center;
-      padding: 2rem;
     }
     .hero h2 {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
+      color: #003087;
       margin-bottom: 1rem;
-      color: #1b4332;
     }
     .hero p {
       font-size: 1.2rem;
       margin-bottom: 2rem;
+      color: #333;
     }
     .hero button {
       padding: 1rem 2rem;
-      background: #40916c;
+      background-color: #007f3b;
       color: white;
-      font-size: 1.1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-size: 1.1rem;
       cursor: pointer;
       transition: background 0.3s ease;
     }
     .hero button:hover {
-      background: #1b4332;
+      background-color: #005a2c;
     }
     .strengths {
       padding: 3rem 2rem;
-      text-align: center;
+      background-color: white;
     }
     .strengths h3 {
       font-size: 2rem;
       margin-bottom: 1.5rem;
-      color: #081c15;
+      text-align: center;
+      color: #003087;
     }
     .strengths-grid {
       display: grid;
@@ -81,33 +79,44 @@
       margin-top: 2rem;
     }
     .card {
-      background: white;
-      border-radius: 10px;
+      background: #f0f8ff;
+      border-radius: 8px;
       padding: 1rem;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
+      text-align: center;
+      border: 1px solid #cdddeb;
+      transition: box-shadow 0.3s;
     }
     .card:hover {
-      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     .card img {
-      width: 100%;
+      max-width: 100%;
       height: 180px;
       object-fit: contain;
-      border-radius: 6px;
-      margin-bottom: 0.8rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
     }
     .card p {
       font-weight: 600;
       font-size: 1rem;
-      color: #1b4332;
+      color: #003087;
     }
     footer {
-      background-color: #2d6a4f;
+      background-color: #005eb8;
       color: white;
       text-align: center;
       padding: 1rem;
+      font-size: 0.9rem;
       margin-top: 2rem;
+    }
+
+    @media (max-width: 600px) {
+      .hero h2 {
+        font-size: 2rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -121,13 +130,13 @@
   </header>
 
   <section class="hero">
-    <h2>Start Your Weight Loss Journey</h2>
-    <p>Begin consultation and access prescription Mounjaro injections</p>
+    <h2>Weight Loss Medication Consultation</h2>
+    <p>Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.</p>
     <button onclick="window.location.href='mounjaro.html'">Start Consultation</button>
   </section>
 
   <section class="strengths">
-    <h3>Mounjaro Injection Strengths</h3>
+    <h3>Available Mounjaro Strengths</h3>
     <div class="strengths-grid">
       <div class="card">
         <img src="https://www.mounjaro.com/content/dam/mounjaro/en/images/mounjaro-2-5-mg-pen.png" alt="2.5 mg Mounjaro">
@@ -157,7 +166,7 @@
   </section>
 
   <footer>
-    &copy; 2025 PharmaLogic. All rights reserved.
+    &copy; 2025 PharmaLogic. This site is not affiliated with the NHS. Always consult a registered medical professional.
   </footer>
 
 </body>
