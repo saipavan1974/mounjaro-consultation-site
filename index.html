@@ -62,6 +62,50 @@
     .hero button:hover {
       background-color: #005a2c;
     }
+
+    /* How It Works Section */
+    .how-it-works {
+      background-color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .how-it-works h3 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #003087;
+    }
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .step {
+      flex: 1 1 250px;
+      max-width: 300px;
+      background-color: #f0f8ff;
+      border: 1px solid #cdddeb;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: box-shadow 0.3s;
+    }
+    .step:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .step img {
+      height: 60px;
+      margin-bottom: 1rem;
+    }
+    .step h4 {
+      font-size: 1.1rem;
+      color: #003087;
+      margin-bottom: 0.5rem;
+    }
+    .step p {
+      font-size: 0.95rem;
+      color: #333;
+    }
+
     .strengths {
       padding: 3rem 2rem;
       background-color: white;
@@ -133,6 +177,27 @@
     <h2>Weight Loss Medication Consultation</h2>
     <p>Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.</p>
     <button onclick="window.location.href='mounjaro.html'">Start Consultation</button>
+  </section>
+
+  <section class="how-it-works">
+    <h3>How It Works in 3 Easy Steps</h3>
+    <div class="steps">
+      <div class="step">
+        <img src="https://img.icons8.com/ios-filled/100/000000/survey.png" alt="Questionnaire Icon">
+        <h4>1. Medical Questionnaire</h4>
+        <p>Answer secure medical and lifestyle questions online.</p>
+      </div>
+      <div class="step">
+        <img src="https://img.icons8.com/ios-filled/100/000000/id-verified.png" alt="ID Upload Icon">
+        <h4>2. ID + Video Upload</h4>
+        <p>Upload proof of identity and a quick video for verification.</p>
+      </div>
+      <div class="step">
+        <img src="https://img.icons8.com/ios-filled/100/000000/doctor-male.png" alt="Pharmacist Icon">
+        <h4>3. Pharmacist Review & Delivery</h4>
+        <p>GPhC-licensed pharmacist reviews and dispatches your order.</p>
+      </div>
+    </div>
   </section>
 
   <section class="strengths">
