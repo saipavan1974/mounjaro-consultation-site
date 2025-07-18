@@ -1,15 +1,52 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Payment</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <title>Payment - PharmaLogic</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <h2>Payment</h2>
-  <p>Thank you! Your details have been submitted. Please proceed with payment.</p>
-  <button onclick="alert('Redirecting to payment gateway...')">Pay Now</button>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-2xl mx-auto mt-16 p-6 bg-white rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center">Payment Options</h1>
+
+    <form action="https://your-payment-handler.com/process" method="POST" class="space-y-6">
+      <div>
+        <label class="block font-semibold mb-2">Card Type</label>
+        <select name="card_type" class="w-full p-3 border border-gray-300 rounded">
+          <option value="visa">Visa</option>
+          <option value="mastercard">Mastercard</option>
+          <option value="creditcard">Credit Card</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-2">Cardholder Name</label>
+        <input type="text" name="card_name" class="w-full p-3 border border-gray-300 rounded" required>
+      </div>
+
+      <div>
+        <label class="block font-semibold mb-2">Card Number</label>
+        <input type="text" name="card_number" class="w-full p-3 border border-gray-300 rounded" maxlength="19" required>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold mb-2">Expiry Date (MM/YY)</label>
+          <input type="text" name="expiry" class="w-full p-3 border border-gray-300 rounded" placeholder="MM/YY" required>
+        </div>
+        <div>
+          <label class="block font-semibold mb-2">CVV</label>
+          <input type="text" name="cvv" class="w-full p-3 border border-gray-300 rounded" maxlength="4" required>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+          Pay Now
+        </button>
+      </div>
+    </form>
+  </div>
 </body>
 </html>
