@@ -132,7 +132,19 @@
       <label class="block font-semibold">How will you achieve it?</label>
       <textarea name="goal_plan" id="goal_plan" class="w-full mt-2 p-2 border border-gray-300 rounded"></textarea>
     </div>
-
+<div>
+        <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
+        <select name="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
+          <option value="">Select one</option>
+          <option value="2.5mg">2.5mg</option>
+          <option value="5mg">5mg</option>
+          <option value="7.5mg">7.5mg</option>
+          <option value="10mg">10mg</option>
+          <option value="12.5mg">12.5mg</option>
+          <option value="15mg">15mg</option>
+        </select>
+      </div>
+    </div>
     <!-- Legal & Consent -->
     <div>
       <label class="block font-semibold">Agree to Terms & Conditions? <span class="text-red-600">*</span></label>
@@ -152,19 +164,6 @@
       </select>
       <p class="text-red-600 text-sm hidden" id="sideEffectsError">This is required.</p>
       <div>
-        <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
-        <select name="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
-          <option value="">Select one</option>
-          <option value="2.5mg">2.5mg</option>
-          <option value="5mg">5mg</option>
-          <option value="7.5mg">7.5mg</option>
-          <option value="10mg">10mg</option>
-          <option value="12.5mg">12.5mg</option>
-          <option value="15mg">15mg</option>
-        </select>
-      </div>
-    </div>
-    <div>
       <label class="block font-semibold">Confirm you're over 18 and agree? <span class="text-red-600">*</span></label>
       <select name="over_18" id="over_18" class="w-full mt-2 p-2 border border-gray-300 rounded" required>
         <option value="">Select</option>
