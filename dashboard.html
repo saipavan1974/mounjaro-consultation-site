@@ -2,90 +2,265 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PharmaLogic Orders Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PharmaLogic Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body { padding: 2rem; background-color: #f8f9fa; }
-    .status-processing { background-color: #d1e7dd; color: #0f5132; padding: 5px 10px; border-radius: 6px; }
-    .status-pending { background-color: #fff3cd; color: #664d03; padding: 5px 10px; border-radius: 6px; }
+    body {
+      background-color: #f8f9fa;
+    }
+    .status-processing {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .status-pending {
+      background-color: #fff3cd;
+      color: #664d03;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .status-approved {
+      background-color: #cfe2ff;
+      color: #084298;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .login-container {
+      max-width: 400px;
+      margin: auto;
+      padding-top: 100px;
+    }
+    .navbar-brand {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">PharmaLogic</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Admin Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/index.html">Home</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-  <h2 class="mb-4">Orders Dashboard (Netlify Form Submissions)</h2>
-
-  <div class="mb-3">
-    <label for="token" class="form-label">Netlify Access Token</label>
-    <input type="password" class="form-control" id="token" placeholder="Paste your Netlify personal access token" />
+  <div id="loginScreen" class="login-container">
+    <h3>Admin Login</h3>
+    <input
+      type="password"
+      id="adminPassword"
+      class="form-control mb-3"
+      placeholder="Enter admin password"
+      autofocus
+    />
+    <button class="btn btn-primary" onclick="authenticate()">Login</button>
   </div>
-  <div class="mb-3">
-    <label for="formName" class="form-label">Form Name</label>
-    <input type="text" class="form-control" id="formName" placeholder="e.g., consultation-form" />
-  </div>
-  <button class="btn btn-primary mb-4" onclick="loadSubmissions()">Load Orders</button>
 
-  <table class="table table-bordered table-hover">
-    <thead class="table-light">
-      <tr>
-        <th>Order ID</th>
-        <th>Customer</th>
-        <th>Email / Phone</th>
-        <th>Product</th>
-        <th>Status</th>
-        <th>Address</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody id="orderTableBody"></tbody>
-  </table>
+  <div
+    id="dashboard"
+    style="display: none"
+    class="container mt-4"
+  >
+    <h2 class="mb-4">Orders Dashboard (Netlify Submissions)</h2>
+
+    <div class="mb-3">
+      <label for="statusFilter" class="form-label">Filter by Status</label>
+      <select
+        id="statusFilter"
+        class="form-select"
+        onchange="filterStatus()"
+      >
+        <option value="all">All</option>
+        <option value="Processing">Processing</option>
+        <option value="Pending">Pending</option>
+        <option value="Approved">Approved</option>
+      </select>
+    </div>
+
+    <button class="btn btn-secondary mb-3" onclick="exportCSV()">
+      Export to CSV
+    </button>
+
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Email / Phone</th>
+          <th>Product</th>
+          <th>Status</th>
+          <th>Address</th>
+          <th>ID Upload</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="orderTableBody"></tbody>
+    </table>
+  </div>
 
   <script>
+    // Constants
+    const adminPass = "pharmalogic123";
+    const netlifyToken =
+      "nfp_Sd1XEwU9QnkyK9B3C7aQ5QzFBUC2FdM5a872";
+    const netlifyFormName = "consultation-form";
+
+    let allSubmissions = [];
+    let currentFormID = "";
+
+    // Authenticate admin and show dashboard with data loaded automatically
+    function authenticate() {
+      const input = document.getElementById("adminPassword").value;
+      if (input === adminPass) {
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        loadSubmissions();
+      } else {
+        alert("Incorrect password!");
+      }
+    }
+
+    // Fetch form ID and submissions from Netlify API
     async function loadSubmissions() {
-      const token = document.getElementById('token').value.trim();
-      const formName = document.getElementById('formName').value.trim();
+      const headers = { Authorization: `Bearer ${netlifyToken}` };
+      try {
+        // Get all forms to find the ID for formName
+        const formsRes = await fetch(
+          "https://api.netlify.com/api/v1/forms",
+          { headers }
+        );
+        if (!formsRes.ok) throw new Error("Failed to fetch forms.");
+        const forms = await formsRes.json();
 
-      if (!token || !formName) {
-        alert("Please enter both Access Token and Form Name.");
-        return;
+        const form = forms.find((f) => f.name === netlifyFormName);
+        if (!form) return alert("Form not found.");
+
+        currentFormID = form.id;
+
+        // Get submissions for the form
+        const subsRes = await fetch(
+          `https://api.netlify.com/api/v1/forms/${form.id}/submissions`,
+          { headers }
+        );
+        if (!subsRes.ok)
+          throw new Error("Failed to fetch submissions.");
+        allSubmissions = await subsRes.json();
+        renderTable(allSubmissions);
+      } catch (err) {
+        alert(err.message);
       }
+    }
 
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-
-      const response = await fetch(`https://api.netlify.com/api/v1/forms`, { headers });
-      const forms = await response.json();
-      const form = forms.find(f => f.name === formName);
-
-      if (!form) {
-        alert("Form not found.");
-        return;
-      }
-
-      const submissionsRes = await fetch(`https://api.netlify.com/api/v1/forms/${form.id}/submissions`, { headers });
-      const submissions = await submissionsRes.json();
-
-      const tbody = document.getElementById('orderTableBody');
+    // Render table rows based on submissions data
+    function renderTable(data) {
+      const tbody = document.getElementById("orderTableBody");
       tbody.innerHTML = "";
-
-      submissions.forEach((submission, index) => {
-        const data = submission.data;
-
-        const tr = document.createElement('tr');
+      data.forEach((s, i) => {
+        const d = s.data;
+        const status = d.status || "Pending";
+        const statusClass =
+          status === "Processing"
+            ? "status-processing"
+            : status === "Approved"
+            ? "status-approved"
+            : "status-pending";
+        const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>#${submission.number || index + 1}</td>
-          <td>${data["full-name"] || data.name || "-"}</td>
-          <td>${data.email || ""}<br/>${data.phone || ""}</td>
-          <td>${data.product || data["product-strength"] || "-"}</td>
-          <td><span class="${data.status === "Processing" ? "status-processing" : "status-pending"}">${data.status || "Pending"}</span></td>
-          <td>${data.address || "-"}</td>
-          <td>${new Date(submission.created_at).toLocaleString()}</td>
+          <td>#${s.number || i + 1}</td>
+          <td>${d["full-name"] || d.name || "-"}</td>
+          <td>${d.email || ""}<br/>${d.phone || ""}</td>
+          <td>${d.product || d["product-strength"] || "-"}</td>
+          <td><span class="${statusClass}">${status}</span></td>
+          <td>${d.address || "-"}</td>
+          <td>${
+            d.idupload || d["id-upload"]
+              ? `<a href="${d.idupload || d["id-upload"]}" target="_blank">View</a>`
+              : "-"
+          }</td>
+          <td>${new Date(s.created_at).toLocaleString()}</td>
+          <td><button class="btn btn-sm btn-outline-success" onclick="markApproved('${s.id}')">Mark Approved</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
+
+    // Filter displayed submissions by status
+    function filterStatus() {
+      const filter = document.getElementById("statusFilter").value;
+      if (filter === "all") renderTable(allSubmissions);
+      else {
+        const filtered = allSubmissions.filter(
+          (s) => (s.data.status || "Pending") === filter
+        );
+        renderTable(filtered);
+      }
+    }
+
+    // Export current submissions as CSV
+    function exportCSV() {
+      let csv =
+        "Order ID,Name,Email,Phone,Product,Status,Address,ID Upload,Date\n";
+      allSubmissions.forEach((s, i) => {
+        const d = s.data;
+        csv += `#${s.number || i + 1},"${d["full-name"] || d.name || ""}","${d.email || ""}","${d.phone || ""}","${d.product || d["product-strength"] || ""}","${d.status || "Pending"}","${d.address || ""}","${d.idupload || d["id-upload"] || ""}","${new Date(
+          s.created_at
+        ).toLocaleString()}"\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "netlify_orders.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Mark a submission as Approved via API
+    async function markApproved(submissionId) {
+      const headers = {
+        Authorization: `Bearer ${netlifyToken}`,
+        "Content-Type": "application/json",
+      };
+      try {
+        const response = await fetch(
+          `https://api.netlify.com/api/v1/submissions/${submissionId}`,
+          {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify({ fields: { status: "Approved" } }),
+          }
+        );
+        if (response.ok) {
+          alert("Marked as Approved");
+          loadSubmissions();
+        } else {
+          throw new Error("Failed to update status");
+        }
+      } catch (err) {
+        alert(err.message);
+      }
+    }
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
