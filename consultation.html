@@ -51,6 +51,89 @@
         <textarea name="health_conditions" rows="3" class="w-full border px-4 py-2 rounded"></textarea>
       </div>
 
+        <div>
+          <label class="block font-semibold">Are you on Mounjaro? (If yes, start date)</label>
+          <input
+            type="date"
+            name="mounjaro_start_date"
+            id="mounjaro_start_date"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div>
+          <label class="block font-semibold">Date of Birth <span class="text-red-600">*</span></label>
+          <input
+            type="date"
+            name="dob"
+            id="dob"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+            required
+          />
+          <p class="text-red-600 text-sm hidden" id="dobError">Please select your date of birth.</p>
+        </div>
+        <div>
+          <label class="block font-semibold">Sex at Birth</label>
+          <select
+            name="sex"
+            id="sex"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          >
+            <option value="">Select</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">Any medicine reaction?</label>
+          <input
+            type="text"
+            name="reaction"
+            id="reaction"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div>
+          <label class="block font-semibold">Name of your GP</label>
+          <input
+            type="text"
+            name="gp_name"
+            id="gp_name"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div>
+          <label class="block font-semibold">GP Address (including postcode)</label>
+          <textarea
+            name="gp_address"
+            id="gp_address"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          ></textarea>
+        </div>
+        <div>
+          <label class="block font-semibold">Consent to share details with your GP?</label>
+          <select
+            name="share_with_gp"
+            id="share_with_gp"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold">Consent to check your Summary Care Record?</label>
+          <select
+            name="ncrs_consent"
+            id="ncrs_consent"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+
       <!-- Step 3 - Medication Preference -->
       <div>
         <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
@@ -70,8 +153,10 @@
         <label class="block mt-4 mb-2 font-semibold">Upload Proof of ID</label>
         <input type="file" name="proof_of_id" required class="w-full" />
 
-        <label class="block mt-4 mb-2 font-semibold">Upload Previous Prescription (if any)</label>
-        <input type="file" name="previous_prescription" class="w-full" />
+        <div id="prescription-upload">
+          <label class="block mt-4 mb-2 font-semibold">Upload Previous Prescription (if any)</label>
+          <input type="file" name="previous_prescription" class="w-full" />
+        </div>
 
         <label class="block mt-4 mb-2 font-semibold">Upload a short video (for verification)</label>
         <input type="file" name="video_upload" accept="video/*" class="w-full" />
@@ -106,6 +191,26 @@
 
     heightInput?.addEventListener('input', calculateBMI);
     weightInput?.addEventListener('input', calculateBMI);
+  </script>
+
+  <!-- Hide/Show Prescription Upload -->
+  <script>
+    const strengthSelect = document.querySelector('select[name="mounjaro_strength"]');
+    const prescriptionField = document.getElementById('prescription-upload');
+
+    function togglePrescriptionField() {
+      if (strengthSelect.value === "2.5mg") {
+        prescriptionField.style.display = "none";
+      } else {
+        prescriptionField.style.display = "block";
+      }
+    }
+
+    // Initial call
+    togglePrescriptionField();
+
+    // Update on change
+    strengthSelect.addEventListener('change', togglePrescriptionField);
   </script>
 
   <!-- Stripe Redirect -->
