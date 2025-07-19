@@ -21,169 +21,126 @@
   <!-- Form Container -->
   <div class="max-w-4xl mx-auto p-6 bg-white shadow-md mt-10 rounded-lg">
     <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">Start Consultation Form</h1>
-    <form id="consultationForm" action="https://formspree.io/f/mrblbjkd" method="POST"
-          enctype="multipart/form-data" class="space-y-6">
+    <form id="consultationForm" action="https://formspree.io/f/mrblbjkd" method="POST" enctype="multipart/form-data" class="space-y-6">
 
-      <!-- File Uploads -->
+      <!-- Email -->
       <div>
         <label class="block font-semibold">Your Email</label>
         <input type="email" name="email" class="w-full mt-2 p-2 border border-gray-300 rounded" required>
       </div>
+
+      <!-- File Uploads -->
       <div>
         <label class="block font-semibold">Valid Proof of ID (Driving Licence or Passport)</label>
-        <input type="file" name="proof_of_id" accept=".pdf,.jpg,.jpeg,.png"
-               class="w-full mt-2 p-2 border border-gray-300 rounded">
+        <input type="file" name="proof_of_id" accept=".pdf,.jpg,.jpeg,.png" class="w-full mt-2 p-2 border border-gray-300 rounded">
       </div>
       <div>
         <label class="block font-semibold">Previous Prescription</label>
-        <input type="file" name="previous_prescription" accept=".pdf,.jpg,.jpeg,.png"
-               class="w-full mt-2 p-2 border border-gray-300 rounded">
+        <input type="file" name="previous_prescription" accept=".pdf,.jpg,.jpeg,.png" class="w-full mt-2 p-2 border border-gray-300 rounded">
       </div>
       <div>
         <label class="block font-semibold">Upload Video (short clip on scales)</label>
-        <input type="file" name="video_upload" accept="video/*"
-               class="w-full mt-2 p-2 border border-gray-300 rounded">
+        <input type="file" name="video_upload" accept="video/*" class="w-full mt-2 p-2 border border-gray-300 rounded">
       </div>
 
-      <!-- Consultation Questions -->
-      <div>
-        <label class="block font-semibold">Are you on Mounjaro? (If yes, start date)</label>
-        <input type="date" name="mounjaro_start_date"
-               class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
-      <div>
-        <label class="block font-semibold">Date of Birth</label>
-        <input type="date" name="dob" class="w-full mt-2 p-2 border border-gray-300 rounded" required>
-      </div>
+      <!-- Questions -->
+      <div><label class="block font-semibold">Are you on Mounjaro? (If yes, start date)</label><input type="date" name="mounjaro_start_date" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
+      <div><label class="block font-semibold">Date of Birth</label><input type="date" name="dob" class="w-full mt-2 p-2 border border-gray-300 rounded" required></div>
       <div>
         <label class="block font-semibold">Sex at Birth</label>
         <select name="sex" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="female">Female</option>
-          <option value="male">Male</option>
+          <option value="">Select</option><option value="female">Female</option><option value="male">Male</option>
         </select>
       </div>
-      <div>
-        <label class="block font-semibold">Any medicine reaction?</label>
-        <input type="text" name="reaction" class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
-      <div>
-        <label class="block font-semibold">Name of your GP</label>
-        <input type="text" name="gp_name" class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
-      <div>
-        <label class="block font-semibold">GP Address (including postcode)</label>
-        <textarea name="gp_address" class="w-full mt-2 p-2 border border-gray-300 rounded"></textarea>
-      </div>
+      <div><label class="block font-semibold">Any medicine reaction?</label><input type="text" name="reaction" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
+      <div><label class="block font-semibold">Name of your GP</label><input type="text" name="gp_name" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
+      <div><label class="block font-semibold">GP Address (including postcode)</label><textarea name="gp_address" class="w-full mt-2 p-2 border border-gray-300 rounded"></textarea></div>
       <div>
         <label class="block font-semibold">Consent to share details with your GP?</label>
         <select name="share_with_gp" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
       <div>
         <label class="block font-semibold">Consent to check your Summary Care Record?</label>
         <select name="ncrs_consent" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
-      <div>
-        <label class="block font-semibold">Current Height</label>
-        <input type="text" name="height" class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
-      <div>
-        <label class="block font-semibold">Current Weight</label>
-        <input type="text" name="weight" class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
+      <div><label class="block font-semibold">Current Height</label><input type="text" name="height" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
+      <div><label class="block font-semibold">Current Weight</label><input type="text" name="weight" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
       <div>
         <label class="block font-semibold">High Cholesterol?</label>
         <select name="cholesterol" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
-      <div>
-        <label class="block font-semibold">Your Weight Goal</label>
-        <input type="text" name="goal" class="w-full mt-2 p-2 border border-gray-300 rounded">
-      </div>
-      <div>
-        <label class="block font-semibold">How will you achieve it?</label>
-        <textarea name="goal_plan" class="w-full mt-2 p-2 border border-gray-300 rounded"></textarea>
-      </div>
+      <div><label class="block font-semibold">Your Weight Goal</label><input type="text" name="goal" class="w-full mt-2 p-2 border border-gray-300 rounded"></div>
+      <div><label class="block font-semibold">How will you achieve it?</label><textarea name="goal_plan" class="w-full mt-2 p-2 border border-gray-300 rounded"></textarea></div>
       <div>
         <label class="block font-semibold">Agree to Terms & Conditions?</label>
         <select name="treatment_consent" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
       <div>
         <label class="block font-semibold">Agree to seek medical help if side-effects?</label>
         <select name="side_effects_agreement" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
       <div>
         <label class="block font-semibold">Confirm you're over 18 and agree?</label>
         <select name="over_18" class="w-full mt-2 p-2 border border-gray-300 rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
+          <option value="">Select</option><option value="yes">Yes</option><option value="no">No</option>
         </select>
       </div>
 
-      <!-- Submit -->
+      <!-- Submit Button -->
       <div class="text-center">
-        <button type="Next" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg mt-4">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg mt-4">
           NEXT
         </button>
       </div>
     </form>
 
-    <!-- Hidden success & checkout redirect -->
+    <!-- Redirect Message -->
     <div id="redirectSection" class="text-center mt-6 hidden">
       <p class="text-green-700 font-semibold mb-4">Thank you! Redirecting to payment…</p>
     </div>
   </div>
 
-  <!-- Submission & Redirect Script -->
+  <!-- Redirect Script -->
   <script>
-  const form = document.getElementById('consultationForm');
-  const redirectSection = document.getElementById('redirectSection');
+    const form = document.getElementById('consultationForm');
+    const redirectSection = document.getElementById('redirectSection');
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const data = new FormData(form);
-    fetch(form.action, {
-      method: 'POST',
-      body: data,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(res => {
-      if (res.ok) {
-        form.classList.add('hidden');
-        redirectSection.classList.remove('hidden');
-        // Redirect to your local payment page:
-        setTimeout(() => {
-          window.location.href = 'payment.html';
-        }, 1500);
-      } else {
-        alert('Submission error. Please try again.');
-      }
-    })
-    .catch(() => {
-      alert('Network error. Please check your connection.');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          form.classList.add('hidden');
+          redirectSection.classList.remove('hidden');
+
+          // Redirect after 1.5 seconds
+          setTimeout(() => {
+            window.location.href = 'payment.html';
+          }, 1500);
+        } else {
+          alert('Form submission failed. Please try again.');
+        }
+      })
+      .catch(() => {
+        alert('Network error. Please check your internet connection.');
+      });
     });
-  });
-</script>
-
+  </script>
 </body>
 </html>
