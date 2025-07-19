@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Start your online consultation securely with PharmaLogic. Submit your medical history, ID, and get expert help today." />
+  <meta name="keywords" content="PharmaLogic, online consultation, weight loss medication, mounjaro, secure form" />
+  <meta name="author" content="PharmaLogic" />
   <title>Start Consultation - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -118,6 +121,15 @@
     form.addEventListener('submit', e => {
       e.preventDefault();
       const data = new FormData(form);
+      const queryParams = new URLSearchParams();
+
+      for (let [key, value] of data.entries()) {
+        if (value instanceof File && value.name) {
+          queryParams.append(key, value.name);
+        } else {
+          queryParams.append(key, value);
+        }
+      }
 
       fetch(form.action, {
         method: 'POST',
@@ -128,10 +140,8 @@
         if (response.ok) {
           form.classList.add('hidden');
           redirectSection.classList.remove('hidden');
-
-          // Redirect after 1.5 seconds
           setTimeout(() => {
-            window.location.href = 'payment.html';
+            window.location.href = 'payment.html?' + queryParams.toString();
           }, 1500);
         } else {
           alert('Form submission failed. Please try again.');
