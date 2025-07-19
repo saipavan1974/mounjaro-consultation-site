@@ -21,7 +21,7 @@
       <input type="hidden" name="form-name" value="consultation" />
       <input type="hidden" name="bot-field" />
 
-      <!-- Step 1 - Personal Details -->
+      <!-- Step 1 - Personal Info -->
       <div>
         <label class="block mb-2 font-semibold">Full Name</label>
         <input type="text" name="full_name" required class="w-full border px-4 py-2 rounded" />
@@ -54,7 +54,7 @@
       <!-- Step 3 - Medication Preference -->
       <div>
         <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
-        <select name="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
+        <select name="mounjaro_strength" id="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
           <option value="">Select one</option>
           <option value="2.5mg">2.5mg</option>
           <option value="5mg">5mg</option>
@@ -66,18 +66,68 @@
       </div>
 
       <!-- Step 4 - Uploads -->
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Upload Proof of ID</label>
-        <input type="file" name="proof_of_id" required class="w-full" />
+      <div id="upload-section" class="space-y-4">
+        <div id="proof-id">
+          <label class="block mt-4 mb-2 font-semibold">Upload Valid Proof of ID (Driving Licence or Passport)</label>
+          <input type="file" name="proof_of_id" required class="w-full" />
+        </div>
 
-        <div id="prescription-upload">
-          <label class="block mt-4 mb-2 font-semibold">Upload Previous Prescription (if any)</label>
+        <div id="prescription-div">
+          <label class="block mt-4 mb-2 font-semibold">Upload Previous Prescription</label>
           <input type="file" name="previous_prescription" class="w-full" />
         </div>
 
-        <label class="block mt-4 mb-2 font-semibold">Upload a short video (for verification)</label>
-        <input type="file" name="video_upload" accept="video/*" class="w-full" />
+        <div id="video-div">
+          <label class="block mt-4 mb-2 font-semibold">Upload a short video (on scale & verification)</label>
+          <input type="file" name="video_upload" accept="video/*" class="w-full" />
+        </div>
       </div>
+
+      </div>
+        <div>
+          <label class="block font-semibold">Agree to Terms & Conditions? <span class="text-red-600">*</span></label>
+          <select
+            name="treatment_consent"
+            id="treatment_consent"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+            required
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <p class="text-red-600 text-sm hidden" id="treatmentConsentError">You must agree to the terms.</p>
+        </div>
+        <div>
+          <label class="block font-semibold"
+            >Agree to seek medical help if side-effects? <span class="text-red-600">*</span></label
+          >
+          <select
+            name="side_effects_agreement"
+            id="side_effects_agreement"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+            required
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <p class="text-red-600 text-sm hidden" id="sideEffectsError">This is required.</p>
+        </div>
+        <div>
+          <label class="block font-semibold">Confirm you're over 18 and agree? <span class="text-red-600">*</span></label>
+          <select
+            name="over_18"
+            id="over_18"
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+            required
+          >
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+          <p class="text-red-600 text-sm hidden" id="over18Error">You must confirm this to proceed.</p>
+        </div>
 
       <!-- Submit -->
       <div class="text-center">
@@ -88,7 +138,7 @@
     </form>
   </div>
 
-  <!-- BMI Script -->
+  <!-- BMI Auto Calc -->
   <script>
     const heightInput = document.querySelector('input[name="height"]');
     const weightInput = document.querySelector('input[name="weight"]');
@@ -110,29 +160,37 @@
     weightInput?.addEventListener('input', calculateBMI);
   </script>
 
-  <!-- Hide/Show Prescription Upload -->
+  <!-- Show/Hide Upload Fields Based on Strength -->
   <script>
-    const strengthSelect = document.querySelector('select[name="mounjaro_strength"]');
-    const prescriptionField = document.getElementById('prescription-upload');
+    const strengthSelect = document.getElementById('mounjaro_strength');
+    const prescriptionDiv = document.getElementById('prescription-div');
+    const proofIDDiv = document.getElementById('proof-id');
+    const videoDiv = document.getElementById('video-div');
 
-    function togglePrescriptionField() {
-      if (strengthSelect.value === "2.5mg") {
-        prescriptionField.style.display = "none";
+    function toggleUploads() {
+      const selected = strengthSelect.value;
+      if (selected === "2.5mg") {
+        prescriptionDiv.style.display = "none";
+        videoDiv.style.display = "block";
+        proofIDDiv.style.display = "block";
+      } else if (selected !== "") {
+        prescriptionDiv.style.display = "block";
+        videoDiv.style.display = "block";
+        proofIDDiv.style.display = "block";
       } else {
-        prescriptionField.style.display = "block";
+        prescriptionDiv.style.display = "none";
+        videoDiv.style.display = "none";
+        proofIDDiv.style.display = "none";
       }
     }
 
-    // Initial call
-    togglePrescriptionField();
-
-    // Update on change
-    strengthSelect.addEventListener('change', togglePrescriptionField);
+    strengthSelect.addEventListener('change', toggleUploads);
+    window.addEventListener('DOMContentLoaded', toggleUploads);
   </script>
 
-  <!-- Stripe Redirect -->
+  <!-- Stripe Checkout -->
   <script>
-    document.querySelector('form[name="consultation"]').addEventListener('submit', function () {
+    document.querySelector('form[name="consultation"]').addEventListener('submit', function (e) {
       setTimeout(function () {
         window.location.href = "https://buy.stripe.com/test_dR6dTa8Hq5Gn7XieUU";
       }, 1000);
