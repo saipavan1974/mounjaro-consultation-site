@@ -17,7 +17,7 @@
   <div class="max-w-4xl mx-auto p-6 bg-white shadow-md mt-10 rounded-lg">
     <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">Start Consultation & Payment</h1>
 
-    <form name="consultation" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" action="/thank-you.html" class="space-y-6">
+    <form name="consultation" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" action="/thank-you.html" class="space-y-6" novalidate>
       <input type="hidden" name="form-name" value="consultation" />
       <input type="hidden" name="bot-field" />
 
@@ -45,10 +45,10 @@
           <h2 class="text-xl font-semibold mb-4">Step 2: Medical Information</h2>
 
           <label class="block mb-2 font-semibold">Height (cm)</label>
-          <input type="number" name="height" required class="w-full border px-4 py-2 rounded" />
+          <input type="number" name="height" required class="w-full border px-4 py-2 rounded" min="50" max="300" />
 
           <label class="block mt-4 mb-2 font-semibold">Weight (kg)</label>
-          <input type="number" name="weight" required class="w-full border px-4 py-2 rounded" />
+          <input type="number" name="weight" required class="w-full border px-4 py-2 rounded" min="10" max="500" />
 
           <label class="block mt-4 mb-2 font-semibold">Calculated BMI</label>
           <input type="text" name="bmi" readonly class="w-full border px-4 py-2 bg-gray-100 rounded" />
@@ -73,19 +73,19 @@
           </select>
 
           <div id="upload-section" class="space-y-4 mt-6">
-            <div id="proof-id">
-              <label class="block mb-2 font-semibold">Upload Valid Proof of ID</label>
-              <input type="file" name="proof_of_id" class="w-full" />
+            <div id="proof-id" class="hidden">
+              <label class="block mb-2 font-semibold">Upload Valid Proof of ID <span class="text-red-600">*</span></label>
+              <input type="file" name="proof_of_id" required class="w-full" />
             </div>
 
-            <div id="prescription-div">
-              <label class="block mb-2 font-semibold">Upload Previous Prescription</label>
-              <input type="file" name="previous_prescription" class="w-full" />
+            <div id="prescription-div" class="hidden">
+              <label class="block mb-2 font-semibold">Upload Previous Prescription <span id="prescription-required" class="text-red-600">*</span></label>
+              <input type="file" name="previous_prescription" id="previous_prescription" class="w-full" />
             </div>
 
-            <div id="video-div">
-              <label class="block mb-2 font-semibold">Upload a short video (on scale & verification)</label>
-              <input type="file" name="video_upload" accept="video/*" class="w-full" />
+            <div id="video-div" class="hidden">
+              <label class="block mb-2 font-semibold">Upload a short video (on scale & verification) <span class="text-red-600">*</span></label>
+              <input type="file" name="video_upload" accept="video/*" required class="w-full" />
             </div>
           </div>
         </div>
@@ -150,11 +150,26 @@
       submitDiv.classList.toggle("hidden", index !== steps.length - 1);
     }
 
+    function validateStep(stepIndex) {
+      const step = steps[stepIndex];
+      const inputs = [...step.querySelectorAll("input, select, textarea")];
+      return inputs.every(input => {
+        // Skip disabled or hidden inputs for validation
+        if (input.disabled || input.closest(".hidden")) return true;
+        if (input.hasAttribute("required") && !input.value) {
+          input.focus();
+          return false;
+        }
+        return true;
+      });
+    }
+
     nextBtn.addEventListener("click", () => {
+      if (!validateStep(currentStep)) return;
       if (currentStep < steps.length - 1) {
         currentStep++;
         showStep(currentStep);
-        if (currentStep === 2) toggleUploads(); // Ensure uploads show
+        if (currentStep === 2) toggleUploads(); // Ensure uploads show & validations updated
       }
     });
 
@@ -191,21 +206,31 @@
     const prescriptionDiv = document.getElementById("prescription-div");
     const proofIDDiv = document.getElementById("proof-id");
     const videoDiv = document.getElementById("video-div");
+    const prescriptionInput = document.getElementById("previous_prescription");
 
     function toggleUploads() {
       const selected = strengthSelect.value;
-      if (selected === "2.5mg") {
-        prescriptionDiv.style.display = "none";
-        videoDiv.style.display = "block";
-        proofIDDiv.style.display = "block";
-      } else if (selected !== "") {
-        prescriptionDiv.style.display = "block";
-        videoDiv.style.display = "block";
-        proofIDDiv.style.display = "block";
+
+      // Show proof ID and video always when medication selected
+      if (selected) {
+        proofIDDiv.classList.remove("hidden");
+        videoDiv.classList.remove("hidden");
+        videoDiv.querySelector('input').setAttribute('required', 'required');
+        proofIDDiv.querySelector('input').setAttribute('required', 'required');
       } else {
-        prescriptionDiv.style.display = "none";
-        videoDiv.style.display = "none";
-        proofIDDiv.style.display = "none";
+        proofIDDiv.classList.add("hidden");
+        videoDiv.classList.add("hidden");
+        videoDiv.querySelector('input').removeAttribute('required');
+        proofIDDiv.querySelector('input').removeAttribute('required');
+      }
+
+      // Prescription required only for 5mg and above, hidden for 2.5mg and empty
+      if (selected === "2.5mg" || selected === "") {
+        prescriptionDiv.classList.add("hidden");
+        prescriptionInput.removeAttribute('required');
+      } else {
+        prescriptionDiv.classList.remove("hidden");
+        prescriptionInput.setAttribute('required', 'required');
       }
     }
 
@@ -214,6 +239,10 @@
 
     // Redirect to Stripe on submit
     document.querySelector('form[name="consultation"]').addEventListener('submit', function (e) {
+      // Optional: prevent submission if any validation failed
+      // Allow native HTML5 validation to handle required fields
+
+      // Delay redirect slightly to allow form submission
       setTimeout(() => {
         window.location.href = "https://buy.stripe.com/test_dR6dTa8Hq5Gn7XieUU";
       }, 1000);
