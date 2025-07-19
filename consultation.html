@@ -21,8 +21,15 @@
       <input type="hidden" name="form-name" value="consultation" />
       <input type="hidden" name="bot-field" />
 
-      <!-- Step 1 - Personal Info -->
-      <div>
+      <!-- Step Indicators -->
+      <div class="flex justify-center space-x-4 mb-6">
+        <div id="step-indicator-1" class="w-8 h-8 rounded-full bg-blue-800 text-white flex items-center justify-center">1</div>
+        <div id="step-indicator-2" class="w-8 h-8 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center">2</div>
+        <div id="step-indicator-3" class="w-8 h-8 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center">3</div>
+      </div>
+
+      <!-- STEP 1: Personal Info -->
+      <div class="form-step" id="step-1">
         <label class="block mb-2 font-semibold">Full Name</label>
         <input type="text" name="full_name" required class="w-full border px-4 py-2 rounded" />
 
@@ -36,8 +43,8 @@
         <input type="tel" name="phone" required class="w-full border px-4 py-2 rounded" />
       </div>
 
-      <!-- Step 2 - Medical Info -->
-      <div>
+      <!-- STEP 2: Medical Info + Medication Preference -->
+      <div class="form-step hidden" id="step-2">
         <label class="block mt-4 mb-2 font-semibold">Height (cm)</label>
         <input type="number" name="height" required class="w-full border px-4 py-2 rounded" />
 
@@ -47,13 +54,10 @@
         <label class="block mt-4 mb-2 font-semibold">Calculated BMI</label>
         <input type="text" name="bmi" readonly class="w-full border px-4 py-2 bg-gray-100 rounded" />
 
-        <label class="block mt-4 mb-2 font-semibold">Do you have any health conditions?</label>
+        <label class="block mt-4 mb-2 font-semibold">Health Conditions</label>
         <textarea name="health_conditions" rows="3" class="w-full border px-4 py-2 rounded"></textarea>
-      </div>
 
-      <!-- Step 3 - Medication Preference -->
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
+        <label class="block mt-4 mb-2 font-semibold">Mounjaro Strength</label>
         <select name="mounjaro_strength" id="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
           <option value="">Select one</option>
           <option value="2.5mg">2.5mg</option>
@@ -65,78 +69,98 @@
         </select>
       </div>
 
-      <!-- Step 4 - Uploads -->
-      <div id="upload-section" class="space-y-4">
-        <div id="proof-id">
-          <label class="block mt-4 mb-2 font-semibold">Upload Valid Proof of ID (Driving Licence or Passport)</label>
-          <input type="file" name="proof_of_id" required class="w-full" />
+      <!-- STEP 3: Uploads + Consent -->
+      <div class="form-step hidden" id="step-3">
+        <div id="upload-section" class="space-y-4">
+          <div id="proof-id">
+            <label class="block mt-4 mb-2 font-semibold">Upload ID</label>
+            <input type="file" name="proof_of_id" required class="w-full" />
+          </div>
+          <div id="prescription-div">
+            <label class="block mt-4 mb-2 font-semibold">Previous Prescription</label>
+            <input type="file" name="previous_prescription" class="w-full" />
+          </div>
+          <div id="video-div">
+            <label class="block mt-4 mb-2 font-semibold">Upload Video</label>
+            <input type="file" name="video_upload" accept="video/*" class="w-full" />
+          </div>
         </div>
 
-        <div id="prescription-div">
-          <label class="block mt-4 mb-2 font-semibold">Upload Previous Prescription</label>
-          <input type="file" name="previous_prescription" class="w-full" />
-        </div>
+        <label class="block mt-4 font-semibold">Agree to Terms?</label>
+        <select name="treatment_consent" required class="w-full mt-2 p-2 border rounded">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
 
-        <div id="video-div">
-          <label class="block mt-4 mb-2 font-semibold">Upload a short video (on scale & verification)</label>
-          <input type="file" name="video_upload" accept="video/*" class="w-full" />
-        </div>
+        <label class="block mt-4 font-semibold">Seek help for side-effects?</label>
+        <select name="side_effects_agreement" required class="w-full mt-2 p-2 border rounded">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label class="block mt-4 font-semibold">Are you over 18?</label>
+        <select name="over_18" required class="w-full mt-2 p-2 border rounded">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
       </div>
 
-      </div>
-        <div>
-          <label class="block font-semibold">Agree to Terms & Conditions? <span class="text-red-600">*</span></label>
-          <select
-            name="treatment_consent"
-            id="treatment_consent"
-            class="w-full mt-2 p-2 border border-gray-300 rounded"
-            required
-          >
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <p class="text-red-600 text-sm hidden" id="treatmentConsentError">You must agree to the terms.</p>
-        </div>
-        <div>
-          <label class="block font-semibold"
-            >Agree to seek medical help if side-effects? <span class="text-red-600">*</span></label
-          >
-          <select
-            name="side_effects_agreement"
-            id="side_effects_agreement"
-            class="w-full mt-2 p-2 border border-gray-300 rounded"
-            required
-          >
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <p class="text-red-600 text-sm hidden" id="sideEffectsError">This is required.</p>
-        </div>
-        <div>
-          <label class="block font-semibold">Confirm you're over 18 and agree? <span class="text-red-600">*</span></label>
-          <select
-            name="over_18"
-            id="over_18"
-            class="w-full mt-2 p-2 border border-gray-300 rounded"
-            required
-          >
-            <option value="">Select</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-          <p class="text-red-600 text-sm hidden" id="over18Error">You must confirm this to proceed.</p>
-        </div>
-
-      <!-- Submit -->
-      <div class="text-center">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg mt-4">
-          Submit Form & Proceed to Payment
-        </button>
+      <!-- Navigation Buttons -->
+      <div class="flex justify-between mt-6">
+        <button type="button" id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded hidden">Back</button>
+        <button type="button" id="nextBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">Next</button>
+        <button type="submit" id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded hidden">Submit & Pay</button>
       </div>
     </form>
   </div>
+
+  <!-- Scripts -->
+  <script>
+    const steps = document.querySelectorAll(".form-step");
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const indicators = [
+      document.getElementById("step-indicator-1"),
+      document.getElementById("step-indicator-2"),
+      document.getElementById("step-indicator-3")
+    ];
+    let currentStep = 0;
+
+    function updateFormSteps() {
+      steps.forEach((step, index) => {
+        step.classList.toggle("hidden", index !== currentStep);
+        indicators[index].classList.toggle("bg-blue-800", index === currentStep);
+        indicators[index].classList.toggle("bg-gray-300", index !== currentStep);
+        indicators[index].classList.toggle("text-white", index === currentStep);
+        indicators[index].classList.toggle("text-gray-700", index !== currentStep);
+      });
+      prevBtn.classList.toggle("hidden", currentStep === 0);
+      nextBtn.classList.toggle("hidden", currentStep === steps.length - 1);
+      submitBtn.classList.toggle("hidden", currentStep !== steps.length - 1);
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        updateFormSteps();
+      }
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep--;
+        updateFormSteps();
+      }
+    });
+
+    window.addEventListener("DOMContentLoaded", () => {
+      updateFormSteps();
+    });
+  </script>
 
   <!-- BMI Auto Calc -->
   <script>
@@ -148,8 +172,7 @@
       const height = parseFloat(heightInput.value);
       const weight = parseFloat(weightInput.value);
       if (height > 0 && weight > 0) {
-        const heightM = height / 100;
-        const bmi = weight / (heightM * heightM);
+        const bmi = weight / ((height / 100) ** 2);
         bmiInput.value = bmi.toFixed(2);
       } else {
         bmiInput.value = '';
@@ -160,7 +183,7 @@
     weightInput?.addEventListener('input', calculateBMI);
   </script>
 
-  <!-- Show/Hide Upload Fields Based on Strength -->
+  <!-- Show/Hide Upload Fields -->
   <script>
     const strengthSelect = document.getElementById('mounjaro_strength');
     const prescriptionDiv = document.getElementById('prescription-div');
@@ -188,7 +211,7 @@
     window.addEventListener('DOMContentLoaded', toggleUploads);
   </script>
 
-  <!-- Stripe Checkout -->
+  <!-- Stripe Redirect -->
   <script>
     document.querySelector('form[name="consultation"]').addEventListener('submit', function (e) {
       setTimeout(function () {
