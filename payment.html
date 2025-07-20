@@ -3,160 +3,149 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Payment - PharmaLogic</title>
+  <title>Stripe Test Payment - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
   <div class="max-w-xl mx-auto p-6 bg-white rounded shadow mt-10">
-    <h1 class="text-2xl font-bold mb-6 text-center text-blue-800">Complete Your Payment</h1>
-    
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-800">Test Payment</h1>
+
     <div id="payment-message" class="mb-4 text-center text-green-600 font-semibold hidden"></div>
     <div id="payment-error" class="mb-4 text-center text-red-600 font-semibold hidden"></div>
-    
-    <div id="payment-form-container">
-      <form id="payment-form">
-        <div id="card-element" class="border p-4 rounded mb-4"></div>
-        <button id="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded" type="submit" disabled>
-          Pay Now
-        </button>
-      </form>
-    </div>
+
+    <form id="payment-form">
+      <label for="postal-code" class="block mb-2 font-semibold">Postal Code</label>
+      <input id="postal-code" name="postal_code" type="text" maxlength="10" class="border p-2 rounded w-full mb-4" placeholder="Enter postal code" required />
+
+      <div id="card-element" class="border p-4 rounded mb-4"></div>
+
+      <button id="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded" type="submit" disabled>
+        Pay Now
+      </button>
+    </form>
 
     <div id="loading" class="text-center mt-4 hidden">Loading...</div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Your Stripe publishable key
-      const stripe = Stripe('pk_test_YourPublishableKeyHere');
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Stripe test publishable key
+    const stripe = Stripe('pk_test_51N...YOUR_TEST_PUBLISHABLE_KEY_HERE');
 
-      // Initialize Supabase client
-      const supabase = supabase.createClient(
-        'https://pqtrinpdlyyafwkbrrbj.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-      );
+    // Initialize Supabase client (replace with your keys)
+    const supabase = supabase.createClient(
+      'https://pqtrinpdlyyafwkbrrbj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    );
 
-      const consultationId = localStorage.getItem('consultation_id');
+    // For testing, we'll hardcode a dummy consultation ID here:
+    // Replace with your actual logic or use localStorage if you saved it
+    const consultationId = 'test-consultation-123';
 
-      if (!consultationId) {
-        alert('No consultation session found. Please start the consultation first.');
-        window.location.href = 'consultation.html'; // change to your form page if different
-        return;
-      }
+    const paymentForm = document.getElementById('payment-form');
+    const submitBtn = document.getElementById('submit');
+    const postalCodeInput = document.getElementById('postal-code');
+    const paymentMessage = document.getElementById('payment-message');
+    const paymentError = document.getElementById('payment-error');
+    const loadingEl = document.getElementById('loading');
 
-      const loadingEl = document.getElementById('loading');
-      const paymentMessage = document.getElementById('payment-message');
-      const paymentError = document.getElementById('payment-error');
-      const paymentForm = document.getElementById('payment-form');
-      const submitBtn = document.getElementById('submit');
+    // Show loading while fetching client secret
+    loadingEl.classList.remove('hidden');
 
-      // Show loading while fetching client secret
+    // Your backend URL to create PaymentIntent in test mode
+    const createPaymentIntentUrl = 'http://localhost:4242/create-payment-intent';
+
+    let clientSecret;
+
+    try {
+      const res = await fetch(createPaymentIntentUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ consultation_id: consultationId })
+      });
+      if (!res.ok) throw new Error('Failed to create payment intent');
+      const data = await res.json();
+      clientSecret = data.clientSecret;
+    } catch (err) {
+      loadingEl.classList.add('hidden');
+      paymentError.textContent = 'Error initializing payment: ' + err.message;
+      paymentError.classList.remove('hidden');
+      paymentForm.style.display = 'none';
+      return;
+    }
+
+    loadingEl.classList.add('hidden');
+    submitBtn.disabled = false;
+
+    // Setup Stripe Elements
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#32325d',
+          '::placeholder': { color: '#a0aec0' }
+        },
+        invalid: { color: '#e53e3e' }
+      },
+      hidePostalCode: true
+    });
+    cardElement.mount('#card-element');
+
+    paymentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      paymentError.classList.add('hidden');
+      paymentMessage.classList.add('hidden');
       loadingEl.classList.remove('hidden');
 
-      // Call your backend to create PaymentIntent and get client_secret
-      // Replace this URL with your actual backend API endpoint that creates payment intents
-      const createPaymentIntentUrl = 'https://your-backend.com/create-payment-intent';
+      const postalCode = postalCodeInput.value.trim();
 
-      let clientSecret;
-
-      try {
-        const res = await fetch(createPaymentIntentUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ consultation_id: consultationId }) // send consultation ID to backend
-        });
-
-        if (!res.ok) throw new Error('Failed to create payment intent');
-
-        const data = await res.json();
-        clientSecret = data.clientSecret;
-
-      } catch (err) {
-        loadingEl.classList.add('hidden');
-        paymentError.textContent = 'Error initializing payment: ' + err.message;
-        paymentError.classList.remove('hidden');
-        paymentForm.style.display = 'none';
-        return;
-      }
-
-      loadingEl.classList.add('hidden');
-      submitBtn.disabled = false;
-
-      // Set up Stripe Elements
-      const elements = stripe.elements();
-      const cardElement = elements.create('card', {
-        style: {
-          base: {
-            fontSize: '16px',
-            color: '#32325d',
-            '::placeholder': {
-              color: '#a0aec0'
-            }
-          },
-          invalid: {
-            color: '#e53e3e'
-          }
+      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: { address: { postal_code: postalCode } }
         }
       });
 
-      cardElement.mount('#card-element');
+      if (error) {
+        paymentError.textContent = error.message;
+        paymentError.classList.remove('hidden');
+        loadingEl.classList.add('hidden');
+        submitBtn.disabled = false;
+        return;
+      }
 
-      // Handle form submission
-      paymentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        submitBtn.disabled = true;
-        paymentError.classList.add('hidden');
-        paymentMessage.classList.add('hidden');
-        loadingEl.classList.remove('hidden');
+      if (paymentIntent.status === 'succeeded') {
+        // Update Supabase to mark payment as received
+        const { error: updateError } = await supabase.from('consultations')
+          .update({ paid: true, paid_at: new Date().toISOString() })
+          .eq('id', consultationId);
 
-        // Confirm the card payment
-        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: cardElement
-          }
-        });
+        loadingEl.classList.add('hidden');
 
-        if (error) {
-          // Show error to customer
-          paymentError.textContent = error.message;
+        if (updateError) {
+          paymentError.textContent = 'Payment succeeded but failed to update record: ' + updateError.message;
           paymentError.classList.remove('hidden');
-          loadingEl.classList.add('hidden');
-          submitBtn.disabled = false;
           return;
         }
 
-        if (paymentIntent.status === 'succeeded') {
-          // Payment successful, update Supabase
-          const { error: updateError } = await supabase.from('consultations')
-            .update({ paid: true, paid_at: new Date().toISOString() })
-            .eq('id', consultationId);
+        paymentMessage.textContent = 'Payment successful! Thank you for your order.';
+        paymentMessage.classList.remove('hidden');
 
-          loadingEl.classList.add('hidden');
+        // Clear consultation ID (if stored in localStorage)
+        localStorage.removeItem('consultation_id');
 
-          if (updateError) {
-            paymentError.textContent = 'Payment succeeded but failed to update record: ' + updateError.message;
-            paymentError.classList.remove('hidden');
-            return;
-          }
+        paymentForm.style.display = 'none';
 
-          paymentMessage.textContent = 'Payment successful! Thank you for your order.';
-          paymentMessage.classList.remove('hidden');
-
-          // Clear localStorage consultation id since payment is done
-          localStorage.removeItem('consultation_id');
-
-          // Optionally disable the form or redirect after a delay
-          paymentForm.style.display = 'none';
-
-          // Redirect after 5 seconds or so, adjust URL as needed
-          setTimeout(() => {
-            window.location.href = 'thankyou.html'; // or wherever you want
-          }, 5000);
-        }
-      });
+        setTimeout(() => {
+          window.location.href = 'thankyou.html';
+        }, 5000);
+      }
     });
-  </script>
+  });
+</script>
 </body>
 </html>
