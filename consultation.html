@@ -155,22 +155,20 @@
 
         <div class="mt-6">
           <button type="button" id="back-to-step-2" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold mr-4">Back</button>
-          <button type="submit" id="pay-button" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Submit & Pay</button>
+          <button type="button" id="pay-button" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Submit & Pay</button>
         </div>
       </fieldset>
     </form>
   </div>
 
   <!-- Stripe Card Payment -->
-      <div id="payment-section" class="hidden">
-        <h2 class="text-xl font-semibold mb-4">Card Payment</h2>
-        <div id="card-element" class="border p-4 rounded-md"></div>
-        <div id="card-errors" class="text-red-600 mt-2"></div>
-        <button type="submit" class="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Submit & Pay</button>
-      </div>
-    </form>
+  <div id="payment-section" class="hidden">
+    <h2 class="text-xl font-semibold mb-4">Card Payment</h2>
+    <div id="card-element" class="border p-4 rounded-md"></div>
+    <div id="card-errors" class="text-red-600 mt-2"></div>
+    <button type="submit" class="mt-4 bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Submit & Pay</button>
   </div>
-  
+
   <!-- JavaScript (navigation, validation, submission) -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -241,7 +239,7 @@
         scrollTop();
       });
 
-      // BMI
+      // BMI calculation
       document.getElementById('weight').addEventListener('input', calculateBMI);
       document.getElementById('height').addEventListener('input', calculateBMI);
 
@@ -272,32 +270,13 @@
         summary.innerHTML = html;
       }
 
-      const supabase = supabase.createClient(
-        'https://pqtrinpdlyyafwkbrrbj.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-      );
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!form.checkValidity() || !validatePhone()) {
-          form.reportValidity();
-          return;
-        }
-
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-          if (typeof value === 'string') data[key] = value;
-        });
-
-        const { error } = await supabase.from('consultations').insert([data]);
-        if (error) {
-          alert('Submission failed: ' + error.message);
-        } else {
-          alert('Form submitted! Redirecting to payment...');
-          window.location.href = 'https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc';
-        }
+      // Redirect to payment.html on clicking Submit & Pay
+      document.getElementById('pay-button').addEventListener('click', () => {
+        window.location.href = 'payment.html';
       });
+
+      // Removed form submission to supabase and Stripe from your original code
+      // as per your request to just redirect to payment.html
     });
   </script>
 </body>
