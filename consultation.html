@@ -1,176 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultation Form</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Consultation & Payment - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/alpinejs" defer></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
+<body class="bg-gray-100 text-gray-800">
 
-<body class="bg-gray-50">
-  <div x-data="{ step: 1 }" class="max-w-4xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-6 text-center">Online Consultation</h1>
-    <form name="consultation" method="POST" data-netlify="true">
+  <div class="bg-green-900 text-white px-6 py-4 flex items-center justify-between shadow-md">
+    <a href="index.html"><img src="logo.jpeg" alt="PharmaLogic Logo" class="h-10" /></a>
+    <a href="index.html" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-gray-100">Home</a>
+  </div>
 
-      <!-- Step 1: Consultation -->
-      <div x-show="step === 1">
-        <h2 class="text-xl font-semibold mb-4">Step 1: Medical Consultation</h2>
+  <div class="max-w-4xl mx-auto p-6 bg-white shadow-md mt-10 rounded-lg">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">Start Consultation & Payment</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="text" name="first_name" placeholder="First Name" required class="border p-2 rounded">
-          <input type="text" name="last_name" placeholder="Last Name" required class="border p-2 rounded">
-          <input type="email" name="email" placeholder="Email" required class="border p-2 rounded">
-          <input type="date" name="dob" placeholder="Date of Birth" required class="border p-2 rounded">
-
-          <input type="number" name="weight" placeholder="Weight (kg)" required class="border p-2 rounded" id="weight" oninput="calculateBMI()">
-          <input type="number" name="height" placeholder="Height (cm)" required class="border p-2 rounded" id="height" oninput="calculateBMI()">
-
-          <input type="text" name="bmi" placeholder="BMI" readonly class="border p-2 rounded bg-gray-100" id="bmi">
-
-          <textarea name="existing_conditions" placeholder="Do you have any existing medical conditions?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="current_medications" placeholder="Are you currently taking any medications?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="allergies" placeholder="Do you have any allergies to medication or other substances?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="smoking_status" placeholder="Do you smoke or use any tobacco products?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="alcohol_use" placeholder="How often do you consume alcohol?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="medical_history" placeholder="Have you had any surgeries or hospitalizations in the past?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="pregnancy" placeholder="(For female patients) Are you currently pregnant or breastfeeding?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="mounjaro_use_reason" placeholder="What is your reason for wanting to use Mounjaro?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="previous_weight_loss_attempts" placeholder="Have you tried any other weight loss methods or medications in the past?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="side_effects_concerns" placeholder="Do you have any concerns about possible side effects?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="expectations" placeholder="What are your expectations from this treatment?" required class="border p-2 rounded col-span-2"></textarea>
-
-          <textarea name="additional_comments" placeholder="Any other relevant information you’d like to share with us?" class="border p-2 rounded col-span-2"></textarea>
-        </div>
-
-        <div class="mt-6 text-right">
-          <button type="button" @click="step++" class="bg-blue-600 text-white px-4 py-2 rounded">Next</button>
-        </div>
-      </div>
+    <form id="consultation-form" class="space-y-6" enctype="multipart/form-data" novalidate>
       
+      <!-- Step 1: Consultation & Medical Info -->
+      <fieldset id="step-1">
+        <legend class="font-bold mb-4 text-xl text-gray-700">Patient Consultation & Medical History</legend>
+
+        <!-- Patient Info -->
+        <label class="block mb-3">
+          Full Name*:
+          <input type="text" name="patient_name" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Date of Birth*:
+          <input type="date" name="dob" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Phone Number* (UK format with +44, do not add leading 0):
+          <input type="tel" name="phone" id="phone" required placeholder="+441234567890" pattern="^\+44\d{10}$" class="border p-2 w-full rounded" />
+          <p id="phone-error" class="text-red-600 text-sm mt-1 hidden">Invalid UK phone number format. Use +44 followed by 10 digits (no leading 0).</p>
+        </label>
+        <label class="block mb-3">
+          Email Address*:
+          <input type="email" name="email" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Current Address*:
+          <textarea name="address" required class="border p-2 w-full rounded"></textarea>
+        </label>
+
+        <!-- Medical Screening -->
+        <label class="block mb-3">
+          Weight (kg)*:
+          <input type="number" name="weight" id="weight" step="0.1" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Height (cm)*:
+          <input type="number" name="height" id="height" step="0.1" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Calculated BMI:
+          <input type="text" id="bmi" name="bmi" readonly class="border p-2 w-full rounded bg-gray-100" />
+        </label>
+
+        <label class="block mb-3">
+          Do you have a BMI over 30, or over 27 with comorbidities?*
+          <select name="bmi_criteria" required class="border p-2 w-full rounded">
+            <option value="">Select...</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+
+        <label class="block mb-3">
+          Do you have diabetes?*
+          <select name="t2d" required class="border p-2 w-full rounded">
+            <option value="">Select...</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+
+        <label class="block mb-3">
+          Are you currently pregnant, breastfeeding, or planning to become pregnant?*
+          <select name="pregnancy" required class="border p-2 w-full rounded">
+            <option value="">Select...</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+          </select>
+        </label>
+
+        <label class="block mb-3">
+          Do you have any of the following conditions? (tick all that apply)
+          <div class="mt-1 space-y-1 text-sm">
+            <label><input type="checkbox" name="conditions" value="Thyroid cancer" /> Thyroid cancer (personal or family history)</label><br />
+            <label><input type="checkbox" name="conditions" value="Pancreatitis" /> Pancreatitis</label><br />
+            <label><input type="checkbox" name="conditions" value="Kidney/liver disease" /> Kidney or liver disease</label><br />
+            <label><input type="checkbox" name="conditions" value="Eating disorder" /> History of eating disorder</label><br />
+            <label><input type="checkbox" name="conditions" value="None" /> None</label>
+          </div>
+        </label>
+
+        <label class="block mb-3">
+          Are you currently taking any medications? If yes, please list them:
+          <textarea name="medications" class="border p-2 w-full rounded"></textarea>
+        </label>
+
+        <!-- Mounjaro Strength & Uploads -->
+        <label class="block mb-3 font-semibold">
+          Which strength of Mounjaro are you looking for?*
+          <select name="mounjaro_strength" id="mounjaro_strength" required class="border p-2 w-full rounded">
+            <option value="">Select one</option>
+            <option value="2.5mg">2.5mg</option>
+            <option value="5mg">5mg</option>
+            <option value="7.5mg">7.5mg</option>
+            <option value="10mg">10mg</option>
+            <option value="12.5mg">12.5mg</option>
+            <option value="15mg">15mg</option>
+          </select>
+        </label>
+
+        <div id="proof-id" class="mb-4 hidden">
+          <label class="block mb-2 font-semibold">Upload Valid Proof of ID</label>
+          <input type="file" name="proof_of_id" class="w-full" />
+        </div>
+        <div id="prescription-div" class="mb-4 hidden">
+          <label class="block mb-2 font-semibold">Upload Previous Prescription</label>
+          <input type="file" name="previous_prescription" class="w-full" />
+        </div>
+        <div id="video-div" class="mb-4 hidden">
+          <label class="block mb-2 font-semibold">Upload a short video (on scale & verification)</label>
+          <input type="file" name="video_upload" accept="video/*" class="w-full" />
+        </div>
+
+        <button type="button" id="to-step-2" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold mt-4">Next: Billing & Shipping</button>
+      </fieldset>
+
       <!-- Step 2: Billing & Shipping -->
-      <div x-show="step === 2">
-        <h2 class="text-2xl font-bold mb-4">Step 2: Billing & Shipping</h2>
+      <fieldset id="step-2" class="hidden">
+        <legend class="font-bold mb-4 text-xl text-gray-700">Billing & Shipping Address</legend>
 
-        <label class="block mb-2">
-          Email:
-          <input type="email" name="email" required class="w-full border p-2 rounded" />
+        <h3 class="font-semibold mb-2">Billing Address</h3>
+        <label class="block mb-3">
+          Address Line 1*:
+          <input type="text" name="billing_address_1" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Address Line 2:
+          <input type="text" name="billing_address_2" class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          City*:
+          <input type="text" name="billing_city" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          State/Region*:
+          <input type="text" name="billing_state" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Postcode*:
+          <input type="text" name="billing_postcode" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Country*:
+          <input type="text" name="billing_country" required class="border p-2 w-full rounded" />
         </label>
 
-        <label class="block mb-2">
-          Phone Number (+44):
-          <input type="tel" name="phone" required pattern="\+44\d{10}" placeholder="+441234567890"
-            class="w-full border p-2 rounded" />
+        <h3 class="font-semibold mt-6 mb-2">Shipping Address</h3>
+        <label class="block mb-3">
+          Address Line 1*:
+          <input type="text" name="shipping_address_1" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Address Line 2:
+          <input type="text" name="shipping_address_2" class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          City*:
+          <input type="text" name="shipping_city" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          State/Region*:
+          <input type="text" name="shipping_state" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Postcode*:
+          <input type="text" name="shipping_postcode" required class="border p-2 w-full rounded" />
+        </label>
+        <label class="block mb-3">
+          Country*:
+          <input type="text" name="shipping_country" required class="border p-2 w-full rounded" />
         </label>
 
-        <label class="block mb-2">
-          Address:
-          <input type="text" name="address" required class="w-full border p-2 rounded" />
-        </label>
+        <button type="button" id="back-to-step-1" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold mr-4">Back</button>
+        <button type="button" id="to-step-3" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Next: Review & Pay</button>
+      </fieldset>
 
-        <label class="block mb-2">
-          City:
-          <input type="text" name="city" required class="w-full border p-2 rounded" />
-        </label>
+      <!-- Step 3: Review & Payment -->
+      <fieldset id="step-3" class="hidden">
+        <legend class="font-bold mb-4 text-xl text-gray-700">Review & Payment</legend>
 
-        <label class="block mb-4">
-          Postcode:
-          <input type="text" name="postcode" required class="w-full border p-2 rounded" />
-        </label>
+        <div id="review-summary" class="mb-6 bg-gray-50 border p-4 rounded max-h-96 overflow-y-auto"></div>
 
-        <div class="flex justify-between">
-          <button type="button" @click="step = 1"
-            class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Back</button>
-          <button type="button" @click="step = 3"
-            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Next</button>
-        </div>
-      </div>
+        <div id="payment-error" class="text-red-600 mb-4 hidden"></div>
 
-      <!-- Step 3: Review & Consent -->
-      <div x-show="step === 3">
-        <h2 class="text-2xl font-bold mb-4">Step 3: Consent & Submit</h2>
-         <fieldset class="mb-6">
-          <legend class="font-semibold mb-2">General Consent</legend>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_general" required>
-            I am aware of the patient website Terms & Conditions and I have agreed to continue.
-          </label>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_medicine" required>
-            I have received information on the risks and benefits of the medicine, and I have had the opportunity to ask questions. The medical information I have provided is true and accurate to the best of my knowledge, and I consent to the medicine being administered.
-          </label>
-        </fieldset>
-
-        <fieldset class="mb-6">
-          <legend class="font-semibold mb-2">Data Protection & Record</legend>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_data_storage" required>
-            I understand that my personal information will be securely uploaded to the website’s Database and kept in line with data protection regulations.
-          </label>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_data_use" required>
-            I authorize the collection, storage, and secure transmission of my information for the purposes mentioned above.
-          </label>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_account" required>
-            I acknowledge that after the consultation, the details of my medication and consultations will be accessible through my Online account.
-          </label>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_staff_contact" required>
-            I understand I can speak to staff about any queries regarding the consultation or my data rights.
-          </label>
-        </fieldset>
-
-        <fieldset class="mb-6">
-          <legend class="font-semibold mb-2">Medication Use</legend>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_side_effects" required>
-            The intended user will stop using this medicine and seek medical attention if unusual side effects occur.
-          </label>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_user_only" required>
-            The medicine is solely for use by the intended user.
-          </label>
-          <label class="block mb-4">
-            <input type="checkbox" name="consent_leaflet" required>
-            The intended user will read the patient information leaflet supplied with this medication.
-          </label>
-        </fieldset>
-
-        <fieldset class="mb-6">
-          <legend class="font-semibold mb-2">Age & Terms</legend>
-          <label class="block mb-2">
-            <input type="checkbox" name="consent_18" required>
-            I am over 18 and I agree to the Terms and Conditions
-          </label>
-        </fieldset>
-
-        <div class="flex justify-between">
-          <button type="button" @click="step = 2"
-            class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Back</button>
-          <button type="submit"
-            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Submit & Pay</button>
-        </div>
-      </div>
+        <button type="button" id="back-to-step-2" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold mr-4">Back</button>
+        <button type="submit" id="pay-button" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Submit & Pay</button>
+      </fieldset>
     </form>
-  </main>
+  </div>
 
-  <footer class="bg-white border-t mt-10">
-    <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-500">
-      &copy; 2025 PharmaLogic. All rights reserved.
-    </div>
-  </footer>
+<script>
+  // Elements
+  const form = document.getElementById('consultation-form');
+  const step1 = document.getElementById('step-1');
+  const step2 = document.getElementById('step-2');
+  const step3 = document.getElementById('step-3');
+
+  const toStep2Btn = document.getElementById('to-step-2');
+  const toStep3Btn = document.getElementById('to-step-3');
+  const backToStep1Btn = document.getElementById('back-to-step-1');
+  const backToStep2Btn = document.getElementById('back-to-step-2');
+
+  // Phone validation
+  const phoneInput = document.getElementById('phone');
+  const phoneError = document.getElementById('phone-error');
+
+  function validatePhone() {
+    const regex = /^\+44\d{10}$/;
+    const valid = regex.test(phoneInput.value.trim());
+    if (!valid) {
+      phoneError.classList.remove('hidden');
+      phoneInput.setCustomValidity("Invalid UK phone number format.");
+    } else {
+      phoneError.classList.add('hidden');
+      phoneInput.setCustomValidity("");
+    }
+    return valid;
+  }
+
+  phoneInput.addEventListener('input', validatePhone);
+
+  // BMI calculator
+  const heightInput = document.getElementById('height');
+  const weightInput = document.getElementById('weight');
+  const bmiInput = document.getElementById('bmi');
+
+  function calculateBMI() {
+    const height = parseFloat(heightInput.value);
+    const weight = parseFloat(weightInput.value);
+    if (height > 0 && weight > 0) {
+      const heightM = height / 100;
+      const bmi = weight / (heightM * heightM);
+      bmiInput.value = bmi.toFixed(2);
+    } else {
+      bmiInput.value = '';
+    }
+  }
+  heightInput.addEventListener('input', calculateBMI);
+  weightInput.addEventListener('input', calculateBMI);
+
+  // Mounjaro uploads toggle
+  const strengthSelect = document.getElementById('mounjaro_strength');
+  const proofID = document.getElementById('proof-id');
+  const prescription = document.getElementById('prescription-div');
+  const video = document.getElementById('video-div');
+
+  function toggleUploads() {
+    const val = strengthSelect.value;
+    const show = val !== "";
+    video.classList.toggle("hidden", !show);
+    proofID.classList.toggle("hidden", !show);
+    prescription.classList.toggle("hidden", val === "2.5mg" || !show);
+  }
+  strengthSelect.addEventListener("change", toggleUploads);
+  window.addEventListener("DOMContentLoaded", toggleUploads);
+
+  // Navigation between steps
+  toStep2Btn.addEventListener('click', () => {
+    if (!form.checkValidity() || !validatePhone()) {
+      form.reportValidity();
+      return;
+    }
+    step1.classList.add('hidden');
+    step2.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  backToStep1Btn.addEventListener('click', () => {
+    step2.classList.add('hidden');
+    step1.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  toStep3Btn.addEventListener('click', () => {
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    populateReview();
+    step2.classList.add('hidden');
+    step3.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  backToStep2Btn.addEventListener('click', () => {
+    step3.classList.add('hidden');
+    step2.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  // Populate review summary
+  function populateReview() {
+    const reviewDiv = document.getElementById('review-summary');
+    const formData = new FormData(form);
+    let html = '<h3 class="font-semibold mb-2">Consultation Details</h3><ul class="list-disc pl-5 mb-4">';
+    for (const [key, value] of formData.entries()) {
+      if (key === 'proof_of_id' || key === 'previous_prescription' || key === 'video_upload') continue; // skip files
+      if (!value) continue;
+      // Format key nicely
+      let label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      html += `<li><strong>${label}:</strong> ${value}</li>`;
+    }
+    html += '</ul>';
+    reviewDiv.innerHTML = html;
+  }
+
+  // Stripe payment simulation
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    if (!form.checkValidity() || !validatePhone()) {
+      form.reportValidity();
+      return;
+    }
+
+    // Here you can implement actual Stripe payment processing.
+    // For demo, we redirect to Stripe test payment page.
+    alert('Form submitted successfully! Redirecting to payment...');
+    window.location.href = "https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc";
+  });
+</script>
+
 </body>
-
 </html>
