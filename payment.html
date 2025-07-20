@@ -5,39 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body class="bg-gray-100 font-sans">
 
   <div class="max-w-xl mx-auto bg-white shadow-lg p-8 mt-10 rounded-lg">
     <h2 class="text-2xl font-bold mb-6 text-blue-800">Checkout & Payment</h2>
-    
-    <form action="https://formspree.io/f/mrblbjkd" method="POST" class="space-y-4">
-      <input type="hidden" name="_subject" value="New PharmaLogic Order" />
-      <input type="hidden" name="_redirect" value="https://yourdomain.com/thankyou.html" />
 
-      <div>
-        <label class="block font-semibold">Full Name</label>
-        <input name="fullName" required class="w-full border px-3 py-2 rounded" type="text" />
-      </div>
-
-      <div>
-        <label class="block font-semibold">Email</label>
-        <input name="email" required class="w-full border px-3 py-2 rounded" type="email" />
-      </div>
-
-      <div>
-        <label class="block font-semibold">Phone Number</label>
-        <input name="phone" required class="w-full border px-3 py-2 rounded" type="text" />
-      </div>
-
-      <div>
-        <label class="block font-semibold">Delivery Address</label>
-        <textarea name="address" required class="w-full border px-3 py-2 rounded"></textarea>
-      </div>
-
+    <form id="payment-form" class="space-y-4">
       <div>
         <label class="block font-semibold">Selected Mounjaro Strength</label>
-        <select name="strength" required class="w-full border px-3 py-2 rounded">
+        <select id="strength" required class="w-full border px-3 py-2 rounded">
           <option value="2.5mg - £115.00">2.5mg - £115.00</option>
           <option value="5mg - £145.00">5mg - £145.00</option>
           <option value="7.5mg - £170.00">7.5mg - £170.00</option>
@@ -47,20 +25,70 @@
         </select>
       </div>
 
+      <div id="card-element" class="w-full border px-3 py-2 rounded"></div>
+      <div id="card-errors" class="text-red-600 mt-2"></div>
+
       <button type="submit" class="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 font-semibold">
-        Submit Order Details
+        Pay Securely
       </button>
     </form>
 
-    <!-- Stripe Payment Section -->
-    <div class="text-center mt-8">
-      <h3 class="text-lg font-semibold text-gray-700 mb-4">Secure Payment</h3>
-      <a href="https://buy.stripe.com/test_4gw5mI5Ug1xycU08wx" target="_blank" rel="noopener"
-         class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700">
-        Pay Now with Stripe (Test)
-      </a>
-    </div>
+    <p class="text-sm text-gray-500 mt-4 text-center">Use test card <strong>4242 4242 4242 4242</strong> with any future date, CVC 123, and any ZIP.</p>
   </div>
+
+  <script>
+    const stripe = Stripe('pk_test_51NbUXxFxxxxxxREPLACE_WITH_YOURS'); // Replace with your Stripe publishable key
+    const elements = stripe.elements();
+    const card = elements.create('card');
+    card.mount('#card-element');
+
+    card.on('change', function(event) {
+      const displayError = document.getElementById('card-errors');
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = '';
+      }
+    });
+
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+      const { paymentMethod, error } = await stripe.createPaymentMethod({
+        type: 'card',
+        card: card,
+      });
+
+      if (error) {
+        document.getElementById('card-errors').textContent = error.message;
+        return;
+      }
+
+      const selectedStrength = document.getElementById('strength').value;
+
+      const res = await fetch('https://pqtrinpdlyyafwkbrrbj.supabase.co/functions/v1/process-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'REPLACE_WITH_SUPABASE_ANON_KEY'
+        },
+        body: JSON.stringify({
+          strength: selectedStrength,
+          payment_method_id: paymentMethod.id
+        })
+      });
+
+      const result = await res.json();
+
+      if (result.error) {
+        document.getElementById('card-errors').textContent = result.error.message;
+      } else {
+        alert('Payment and order successful!');
+        window.location.href = '/thankyou.html';
+      }
+    });
+  </script>
 
 </body>
 </html>
