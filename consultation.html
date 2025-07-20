@@ -18,7 +18,6 @@
   <!-- FORM -->
   <div class="max-w-4xl mx-auto p-6 bg-white shadow-md mt-10 rounded-lg">
     <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">Start Consultation & Payment</h1>
-
     <form id="consultation-form">
     <!-- Step 1: Consultation & Medical Info -->
       <fieldset id="step-1">
@@ -231,16 +230,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   const form = document.getElementById('consultation-form');
   if (!form) return;
 
-  // Supabase Config
-  const supabaseUrl = 'https://pqtrinpdlyyafwkbrrbj.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMTg1NjEsImV4cCI6MjA2ODU5NDU2MX0.YMpFYMKNri00L0peXkMN2KyCHX7zQzWLSgP8zR-Cpbs';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  const supabase = supabase.createClient(
+    'https://pqtrinpdlyyafwkbrrbj.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMTg1NjEsImV4cCI6MjA2ODU5NDU2MX0.YMpFYMKNri00L0peXkMN2KyCHX7zQzWLSgP8zR-Cpbs'
+  );
 
-  // BMI Live Calculation
   const weightInput = document.getElementById('weight');
   const heightInput = document.getElementById('height');
   const bmiOutput = document.getElementById('bmi');
-
   function calculateBMI() {
     const weight = parseFloat(weightInput.value);
     const heightCm = parseFloat(heightInput.value);
@@ -252,33 +249,35 @@ document.addEventListener('DOMContentLoaded', async function () {
     const bmi = weight / (heightM * heightM);
     bmiOutput.value = bmi.toFixed(1);
   }
-
   weightInput.addEventListener('input', calculateBMI);
   heightInput.addEventListener('input', calculateBMI);
 
-  const toStep2Btn = document.getElementById('to-step-2');
-  const toStep3Btn = document.getElementById('to-step-3');
   const step1 = document.getElementById('step-1');
   const step2 = document.getElementById('step-2');
   const step3 = document.getElementById('step-3');
 
+  const toStep2Btn = document.getElementById('to-step-2');
+  const toStep3Btn = document.getElementById('to-step-3');
+
   function validatePhone() {
-    return true; // placeholder
+    const phone = document.getElementById('billing-phone');
+    const phoneError = document.getElementById('billing-phone-error');
+    const valid = /^\+44\d{10}$/.test(phone.value.trim());
+    phone.setCustomValidity(valid ? '' : 'Invalid UK phone number');
+    phoneError.classList.toggle('hidden', valid);
+    return valid;
   }
 
-  function populateReview() {
-    const reviewDiv = document.getElementById('review-summary');
-    const formData = new FormData(form);
-    let html = '<h3 class="font-semibold mb-2">Review Your Details</h3><ul class="list-disc pl-5 space-y-2">';
-    for (const [key, value] of formData.entries()) {
-      if (['proof_of_id','previous_prescription','video_upload'].includes(key)) continue;
-      if (!value) continue;
-      const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      html += `<li><strong>${label}:</strong> ${value}</li>`;
-    }
-    html += '</ul>';
-    reviewDiv.innerHTML = html;
-  }
+  document.getElementById('back-to-step-1')?.addEventListener('click', () => {
+    step2.classList.add('hidden');
+    step1.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+  document.getElementById('back-to-step-2')?.addEventListener('click', () => {
+    step3.classList.add('hidden');
+    step2.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
 
   if (toStep2Btn) {
     toStep2Btn.addEventListener('click', () => {
@@ -294,7 +293,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   if (toStep3Btn) {
     toStep3Btn.addEventListener('click', () => {
-      if (!form.checkValidity()) {
+      if (!form.checkValidity() || !validatePhone()) {
         form.reportValidity();
         return;
       }
@@ -305,13 +304,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
+  function populateReview() {
+    const reviewDiv = document.getElementById('review-summary');
+    const formData = new FormData(form);
+    let html = '<h3 class="font-semibold mb-2">Review Your Details</h3><ul class="list-disc pl-5 space-y-2">';
+    for (const [key, value] of formData.entries()) {
+      if (["proof_of_id", "previous_prescription", "video_upload"].includes(key)) continue;
+      if (!value) continue;
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      html += `<li><strong>${label}:</strong> ${value}</li>`;
+    }
+    html += '</ul>';
+    reviewDiv.innerHTML = html;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.checkValidity() || !validatePhone()) {
       form.reportValidity();
       return;
     }
-
     const formData = new FormData(form);
     const data = {};
     formData.forEach((value, key) => {
@@ -319,7 +331,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         data[key] = value;
       }
     });
-
     const { error } = await supabase.from('consultations').insert([data]);
     if (error) {
       alert('Submission failed: ' + error.message);
@@ -329,17 +340,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   });
 
-  const billingPhoneInput = document.getElementById('billing-phone');
-  const billingPhoneError = document.getElementById('billing-phone-error');
-  if (billingPhoneInput && billingPhoneError) {
-    billingPhoneInput.addEventListener('input', () => {
-      const valid = /^\+44\d{10}$/.test(billingPhoneInput.value.trim());
-      billingPhoneInput.setCustomValidity(valid ? '' : 'Invalid UK phone number.');
-      billingPhoneError.classList.toggle('hidden', valid);
-    });
-  }
+  const mounjaroSelect = document.getElementById('mounjaro_strength');
+  mounjaroSelect.addEventListener('change', () => {
+    const proofDiv = document.getElementById('proof-id');
+    const prescriptionDiv = document.getElementById('prescription-div');
+    const videoDiv = document.getElementById('video-div');
+    const show = mounjaroSelect.value !== '';
+    proofDiv.classList.toggle('hidden', !show);
+    prescriptionDiv.classList.toggle('hidden', !show);
+    videoDiv.classList.toggle('hidden', !show);
+  });
 });
 </script>
-
 </body>
 </html>
