@@ -4,230 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mounjaro (Tirzepatide) Injection Pens - Product Information</title>
-  <style>
-    /* Branding Colors */
-    :root {
-      --primary-color: #004a99;
-      --secondary-color: #0071bc;
-      --background-color: #f7f9fc;
-      --text-color: #333;
-      --accent-color: #ff6f61;
-    }
-    /* Reset & Base */
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      background: var(--background-color);
-      color: var(--text-color);
-      line-height: 1.6;
-      padding-top: 110px; /* accommodate header height */
-    }
-    a {
-      color: var(--secondary-color);
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    /* Header */
-    header {
-      background: #064635;
-      color: white;
-      padding: 1.5rem 5rem 1.5rem 5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-    }
-    header a.brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: white;
-      text-decoration: none;
-    }
-    header a.brand img {
-      height: 50px;
-      width: auto;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    nav a, nav button {
-      background: white;
-      color: #064635;
-      font-weight: 600;
-      padding: 0.5rem 1.5rem;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-    nav a:hover, nav button:hover {
-      background: #1a7c3e;
-      color: white;
-    }
-    nav button {
-      /* ensure button styling consistent with links */
-    }
-
-    /* Container */
-    .container {
-      max-width: 900px;
-      margin: 0 auto 4rem auto;
-      background: white;
-      padding: 2rem 2.5rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    /* Headings */
-    h1, h2, h3 {
-      color: var(--primary-color);
-      margin-top: 0;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    h2 {
-      font-size: 1.8rem;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--primary-color);
-      padding-bottom: 0.3rem;
-    }
-    h3 {
-      font-size: 1.2rem;
-      margin-top: 1.2rem;
-      margin-bottom: 0.5rem;
-      cursor: pointer;
-      user-select: none;
-      position: relative;
-      padding-right: 1.5rem;
-      transition: color 0.3s ease;
-    }
-    h3:hover {
-      color: var(--secondary-color);
-    }
-    h3::after {
-      content: "▼";
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.9rem;
-      color: var(--secondary-color);
-      transition: transform 0.3s ease;
-    }
-    h3.active::after {
-      transform: translateY(-50%) rotate(180deg);
-    }
-    /* Lists */
-    ul {
-      list-style: disc inside;
-      margin-left: 1rem;
-    }
-    /* FAQ */
-    .faq-item {
-      margin-bottom: 1rem;
-      border-left: 4px solid var(--secondary-color);
-      padding-left: 1rem;
-      background: #f0f7ff;
-      border-radius: 5px;
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.4s ease;
-    }
-    .faq-item.open {
-      max-height: 500px;
-      transition: max-height 0.6s ease;
-    }
-    .faq-item p {
-      margin: 0.7rem 0 1rem 0;
-      padding-right: 1rem;
-    }
-
-    /* Footer */
-    footer {
-      background: #064635;
-      color: white;
-      padding: 3rem 5rem;
-      margin-top: 4rem;
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-    footer h3 {
-      color: white;
-      margin-bottom: 1rem;
-    }
-    footer div.grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
-    }
-    footer strong {
-      font-weight: 600;
-    }
-    footer .copyright {
-      border-top: 1px solid rgba(255,255,255,0.3);
-      padding-top: 1rem;
-      text-align: center;
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-    /* Responsive */
-    @media (max-width: 768px) {
-      header {
-        padding: 1rem 2rem;
-      }
-      footer {
-        padding: 2rem 2rem;
-      }
-      body {
-        padding-top: 130px;
-      }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body>
+<body class="bg-gray-100 text-gray-800 pt-32">
+
   <!-- Header -->
-  <header>
-    <a href="index.html" class="brand" aria-label="PharmaLogic Home">
-      <!-- Update with your logo image if you want -->
-      <img src="logo.jpeg" alt="PharmaLogic Logo" />
+  <header class="bg-[#064635] text-white fixed top-0 w-full z-50 shadow-lg flex justify-between items-center px-10 py-4">
+    <a href="index.html" class="flex items-center gap-3 text-2xl font-bold">
+      <img src="logo.jpeg" alt="PharmaLogic Logo" class="h-12 w-auto" />
       PharmaLogic
     </a>
-    <nav role="navigation" aria-label="Primary Navigation">
-      <a href="index.html">Home</a>
-      <button type="button" onclick="window.location.href='product.html'">Product</button>
+    <nav class="flex gap-4">
+      <a href="index.html" class="bg-white text-[#064635] px-4 py-2 rounded-md font-semibold hover:bg-[#1a7c3e] hover:text-white transition">Home</a>
+      <a href="product.html" class="bg-white text-[#064635] px-4 py-2 rounded-md font-semibold hover:bg-[#1a7c3e] hover:text-white transition">Product</a>
     </nav>
   </header>
 
   <!-- Main Content -->
-  <main class="container" role="main" aria-label="Mounjaro Product Information">
+  <main class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 mb-10">
 
-    <h1>Mounjaro (Tirzepatide) Injection Pens</h1>
+    <!-- Welcome Section -->
+<section class="bg-white border border-gray-200 rounded-lg p-6 mb-10 shadow-sm">
+  <h2 class="text-2xl font-bold text-[#004a99] mb-2">Welcome to Pharmacy Prime Weight Loss Clinic</h2>
+  <p class="mb-4">Congratulations on taking the first step in your weight loss journey!</p>
+  <p class="mb-4">Please take some time to read this leaflet carefully, in its entirety. You should also read the Patient Information Leaflet that accompanies the medication and keep both leaflets on hand for future reference.</p>
+  <p class="mb-4 font-semibold text-gray-800">If you haven't already done so, go ahead and remove your medication pen from the box and place it in your fridge.</p>
+  <p class="mb-4">We wish you all the best for this next chapter. Remember that my team and I are always on hand to support you, should you need us.</p>
+  <p class="text-[#0071bc] font-medium mb-6">Here’s to a new you. You’ve got this.</p>
 
-    <h2>Available Strengths</h2>
-    <ul>
+  <div class="flex items-center gap-4 mt-4">
+    <img src="https://cdn.jsdelivr.net/gh/openai-cdn/pharmalogic/haroon-amanji.jpg" alt="Haroon Amanji" class="w-24 h-24 rounded-full object-cover shadow" />
+    <div>
+      <p class="font-semibold text-lg">Haroon Amanji</p>
+      <p class="text-sm text-gray-600">Superintendent Pharmacist & Lead Prescriber</p>
+    </div>
+  </div>
+</section>
+
+    <!-- Product Information -->
+    <h1 class="text-3xl font-bold text-[#004a99] mb-4">Mounjaro (Tirzepatide) Injection Pens</h1>
+
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-2 border-b pb-1">Available Strengths</h2>
+    <ul class="list-disc list-inside space-y-1">
       <li>2.5 mg</li>
       <li>5 mg</li>
       <li>7.5 mg</li>
@@ -236,13 +55,11 @@
       <li>15 mg</li>
     </ul>
 
-    <h2>What is Mounjaro?</h2>
-    <p>
-      Mounjaro contains the active ingredient tirzepatide and is prescribed to adults with type 2 diabetes to help manage blood sugar levels. It is given once a week as a subcutaneous injection using a pre-filled pen.
-    </p>
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-2 border-b pb-1">What is Mounjaro?</h2>
+    <p>Mounjaro contains the active ingredient tirzepatide and is prescribed to adults with type 2 diabetes to help manage blood sugar levels. It is given once a week as a subcutaneous injection using a pre-filled pen.</p>
 
-    <h2>How to Use Mounjaro</h2>
-    <ul>
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-2 border-b pb-1">How to Use Mounjaro</h2>
+    <ul class="list-disc list-inside space-y-1">
       <li>Administer the injection once weekly on the same day each week.</li>
       <li>The injection is given under the skin (subcutaneously).</li>
       <li>It may be taken with or without food.</li>
@@ -250,12 +67,12 @@
       <li>Store the pens in a refrigerator before first use and follow storage instructions after opening.</li>
     </ul>
 
-    <h2>Important Safety Information</h2>
-    <ul>
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-2 border-b pb-1">Important Safety Information</h2>
+    <ul class="list-disc list-inside space-y-1">
       <li>Mounjaro is not suitable for patients with type 1 diabetes or diabetic ketoacidosis.</li>
       <li>Inform your healthcare provider if you have a history of pancreatitis, thyroid problems, or allergies.</li>
       <li>Common side effects include:
-        <ul>
+        <ul class="list-disc list-inside ml-4">
           <li>Nausea</li>
           <li>Vomiting</li>
           <li>Diarrhea</li>
@@ -266,101 +83,55 @@
       <li>Keep the medication out of reach of children.</li>
     </ul>
 
-    <h2>Frequently Asked Questions (FAQs)</h2>
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-4 border-b pb-1">Frequently Asked Questions (FAQs)</h2>
 
-    <h3 tabindex="0" aria-expanded="false" aria-controls="faq1content" id="faq1label">Can I take Mounjaro with other diabetes medicines?</h3>
-    <div class="faq-item" id="faq1content" role="region" aria-labelledby="faq1label" aria-hidden="true">
-      <p>Your healthcare provider will advise if Mounjaro can be used alongside your current medications.</p>
+    <div>
+      <button class="faq-toggle font-semibold text-[#004a99] focus:outline-none">Can I take Mounjaro with other diabetes medicines?</button>
+      <div class="faq-content hidden pl-4 text-sm mt-1 mb-4">Your healthcare provider will advise if Mounjaro can be used alongside your current medications.</div>
+
+      <button class="faq-toggle font-semibold text-[#004a99] focus:outline-none">How do I store Mounjaro pens?</button>
+      <div class="faq-content hidden pl-4 text-sm mt-1 mb-4">Store unopened pens in the refrigerator (2°C to 8°C). After first use, the pen can be kept at room temperature for up to 21 days. Do not freeze.</div>
+
+      <button class="faq-toggle font-semibold text-[#004a99] focus:outline-none">What should I do if I miss a dose?</button>
+      <div class="faq-content hidden pl-4 text-sm mt-1 mb-4">Take the missed dose as soon as you remember if it is within 5 days. If more than 5 days have passed, skip the missed dose and resume as scheduled. Do not take two doses at once.</div>
+
+      <button class="faq-toggle font-semibold text-[#004a99] focus:outline-none">Are there any lifestyle changes I should follow while using Mounjaro?</button>
+      <div class="faq-content hidden pl-4 text-sm mt-1 mb-4">Continue following the diet and exercise plan advised by your healthcare provider. Mounjaro is part of your overall diabetes management.</div>
     </div>
 
-    <h3 tabindex="0" aria-expanded="false" aria-controls="faq2content" id="faq2label">How do I store Mounjaro pens?</h3>
-    <div class="faq-item" id="faq2content" role="region" aria-labelledby="faq2label" aria-hidden="true">
-      <p>Store unopened pens in the refrigerator (2°C to 8°C). After first use, the pen can be kept at room temperature for up to 21 days. Do not freeze.</p>
-    </div>
-
-    <h3 tabindex="0" aria-expanded="false" aria-controls="faq3content" id="faq3label">What should I do if I miss a dose?</h3>
-    <div class="faq-item" id="faq3content" role="region" aria-labelledby="faq3label" aria-hidden="true">
-      <p>Take the missed dose as soon as you remember if it is within 5 days of the scheduled dose. If more than 5 days have passed, skip the missed dose and take the next dose on your usual day. Do not take two doses at once.</p>
-    </div>
-
-    <h3 tabindex="0" aria-expanded="false" aria-controls="faq4content" id="faq4label">Are there any lifestyle changes I should follow while using Mounjaro?</h3>
-    <div class="faq-item" id="faq4content" role="region" aria-labelledby="faq4label" aria-hidden="true">
-      <p>Continue following the diet and exercise plan advised by your healthcare provider. Mounjaro is part of your overall diabetes management.</p>
-    </div>
-
-    <h2>Please Note</h2>
-    <p>
-      This product is prescription-only and should only be used under the supervision of a healthcare professional. This information is intended to support, not replace, advice from your healthcare provider. Always consult your pharmacist or doctor if you have any questions or concerns about your treatment.
-    </p>
+    <h2 class="text-xl font-semibold text-[#0071bc] mt-8 mb-2 border-b pb-1">Please Note</h2>
+    <p>This product is prescription-only and should only be used under the supervision of a healthcare professional. Always consult your pharmacist or doctor with any questions about your treatment.</p>
   </main>
 
   <!-- Footer -->
-  <footer>
-    <div class="grid">
+  <footer class="bg-[#064635] text-white py-10 px-6 mt-12">
+    <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
       <div>
-        <h3>About Us</h3>
+        <h3 class="text-xl font-semibold mb-2">About Us</h3>
         <p>
           Founded in 2009, Pharmalogic has developed and specialised in becoming the first healthcare group to establish a dedicated care home service, alongside our independent, family-run, community chemists throughout the NorthWest region.
-          <br><br>
-          Our Superintendent Pharmacist is Haroon Amanji (Reg. No. 2070534)
         </p>
+        <p class="mt-2"><strong>Superintendent Pharmacist:</strong> Haroon Amanji (Reg. No. 2070534)</p>
       </div>
-
       <div>
-        <h3>Head Office</h3>
-        <p>
-          <strong>Address</strong><br />
-          464 Ranglet Road<br />
-          Walton Summit Centre<br />
-          Preston<br />
-          PR5 8AR
-        </p>
-        <br />
-        <p><strong>Tel</strong><br />+44 (0) 1772 620526</p>
-        <br />
-        <p><strong>Fax</strong><br />+44 (0) 1772 697328</p>
-        <br />
-        <p><strong>Email</strong><br />info@pharmalogic.co.uk</p>
+        <h3 class="text-xl font-semibold mb-2">Head Office</h3>
+        <p>464 Ranglet Road, Walton Summit Centre, Preston, PR5 8AR</p>
+        <p class="mt-2"><strong>Tel:</strong> +44 (0) 1772 620526</p>
+        <p><strong>Fax:</strong> +44 (0) 1772 697328</p>
+        <p><strong>Email:</strong> info@pharmalogic.co.uk</p>
       </div>
     </div>
-
-    <div class="copyright">
-      All Rights Reserved. MDS Healthcare Limited. Copyright 2020–2024 ©<br />
-      464 Ranglet Road, Walton Summit Centre, Preston PR5 8AR Tel: 01772 620526
+    <div class="text-center text-sm opacity-70 mt-6">
+      All Rights Reserved. MDS Healthcare Limited. Copyright 2020–2024 ©
     </div>
   </footer>
 
+  <!-- FAQ Toggle Script -->
   <script>
-    // FAQ Collapsible Logic
-    document.querySelectorAll('h3[aria-controls]').forEach(faqHeader => {
-      faqHeader.addEventListener('click', () => {
-        const contentId = faqHeader.getAttribute('aria-controls');
-        const content = document.getElementById(contentId);
-        const isOpen = content.classList.contains('open');
-
-        // Close all FAQ items
-        document.querySelectorAll('.faq-item.open').forEach(openItem => {
-          openItem.classList.remove('open');
-          openItem.previousElementSibling.classList.remove('active');
-          openItem.previousElementSibling.setAttribute('aria-expanded', 'false');
-          openItem.setAttribute('aria-hidden', 'true');
-        });
-
-        if (!isOpen) {
-          content.classList.add('open');
-          faqHeader.classList.add('active');
-          faqHeader.setAttribute('aria-expanded', 'true');
-          content.setAttribute('aria-hidden', 'false');
-          content.focus();
-        }
-      });
-
-      // Keyboard accessibility: toggle on Enter or Space key
-      faqHeader.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          faqHeader.click();
-        }
+    document.querySelectorAll('.faq-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const content = btn.nextElementSibling;
+        content.classList.toggle('hidden');
       });
     });
   </script>
