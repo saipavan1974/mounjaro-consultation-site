@@ -1,245 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Consultation & Payment - PharmaLogic</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultation Form - Multi-Step</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://js.stripe.com/v3/"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800">
 
-  <div class="bg-green-900 text-white px-6 py-4 flex items-center justify-between shadow-md">
-    <a href="index.html"><img src="logo.jpeg" alt="PharmaLogic Logo" class="h-10" /></a>
-    <a href="index.html" class="bg-white text-blue-900 font-semibold px-4 py-2 rounded hover:bg-gray-100">Home</a>
-  </div>
+<body class="bg-gray-50">
+  <header class="bg-white shadow">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-blue-600">PharmaLogic</h1>
+      <nav>
+        <a href="index.html" class="text-gray-700 hover:text-blue-500 mr-4">Home</a>
+        <a href="products.html" class="text-gray-700 hover:text-blue-500">Products</a>
+      </nav>
+    </div>
+  </header>
 
-  <div class="max-w-4xl mx-auto p-6 bg-white shadow-md mt-10 rounded-lg">
-    <h1 class="text-3xl font-bold mb-6 text-center text-blue-800">Start Consultation & Payment</h1>
+  <main class="container mx-auto px-4 py-8" x-data="{ step: 1 }">
+    <form name="consultation" method="POST" data-netlify="true">
+      <input type="hidden" name="form-name" value="consultation">
 
-    <form name="consultation" method="POST" action="/thank-you.html" data-netlify="true" data-netlify-honeypot="bot-field" enctype="multipart/form-data" class="space-y-6" id="consultation-form">
-      <input type="hidden" name="form-name" value="consultation" />
-      <input type="hidden" name="bot-field" />
+      <!-- Step 1: Medical Consultation -->
+      <div x-show="step === 1">
+        <h2 class="text-2xl font-bold mb-4">Step 1: Medical Consultation</h2>
+        <!-- Add your medical questions here -->
+        <label class="block mb-2">
+          Full Name:
+          <input type="text" name="full_name" required class="w-full border p-2 rounded" />
+        </label>
 
-      <!-- Personal Details -->
-      <div>
-        <label class="block mb-2 font-semibold">Full Name</label>
-        <input type="text" name="full_name" required class="w-full border px-4 py-2 rounded" />
+        <label class="block mb-2">
+          Date of Birth:
+          <input type="date" name="dob" required class="w-full border p-2 rounded" />
+        </label>
+
+        <label class="block mb-2">
+          Weight (kg):
+          <input type="number" name="weight" required class="w-full border p-2 rounded" />
+        </label>
+
+        <label class="block mb-2">
+          Height (cm):
+          <input type="number" name="height" required class="w-full border p-2 rounded" />
+        </label>
+
+        <label class="block mb-4">
+          Do you have any allergies?
+          <textarea name="allergies" required class="w-full border p-2 rounded"></textarea>
+        </label>
+
+        <button type="button" @click="step = 2"
+          class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Next</button>
       </div>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Date of Birth</label>
-        <input type="date" name="dob" required class="w-full border px-4 py-2 rounded" />
-      </div>
+      <!-- Step 2: Billing & Shipping -->
+      <div x-show="step === 2">
+        <h2 class="text-2xl font-bold mb-4">Step 2: Billing & Shipping</h2>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Email</label>
-        <input type="email" name="email" required class="w-full border px-4 py-2 rounded" />
-      </div>
+        <label class="block mb-2">
+          Email:
+          <input type="email" name="email" required class="w-full border p-2 rounded" />
+        </label>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Phone</label>
-        <input type="tel" name="phone" required class="w-full border px-4 py-2 rounded" />
-      </div>
+        <label class="block mb-2">
+          Phone Number (+44):
+          <input type="tel" name="phone" required pattern="\+44\d{10}" placeholder="+441234567890"
+            class="w-full border p-2 rounded" />
+        </label>
 
-      <!-- Physical Stats -->
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Height (cm)</label>
-        <input type="number" name="height" required class="w-full border px-4 py-2 rounded" />
-      </div>
+        <label class="block mb-2">
+          Address:
+          <input type="text" name="address" required class="w-full border p-2 rounded" />
+        </label>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Weight (kg)</label>
-        <input type="number" name="weight" required class="w-full border px-4 py-2 rounded" />
-      </div>
+        <label class="block mb-2">
+          City:
+          <input type="text" name="city" required class="w-full border p-2 rounded" />
+        </label>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Calculated BMI</label>
-        <input type="text" name="bmi" readonly class="w-full border px-4 py-2 bg-gray-100 rounded" />
-      </div>
+        <label class="block mb-4">
+          Postcode:
+          <input type="text" name="postcode" required class="w-full border p-2 rounded" />
+        </label>
 
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Do you have any health conditions?</label>
-        <textarea name="health_conditions" rows="3" class="w-full border px-4 py-2 rounded"></textarea>
-      </div>
-
-      <!-- Mounjaro Strength & Uploads -->
-      <div>
-        <label class="block mt-4 mb-2 font-semibold">Which strength of Mounjaro are you looking for?</label>
-        <select name="mounjaro_strength" id="mounjaro_strength" required class="w-full border px-4 py-2 rounded">
-          <option value="">Select one</option>
-          <option value="2.5mg">2.5mg</option>
-          <option value="5mg">5mg</option>
-          <option value="7.5mg">7.5mg</option>
-          <option value="10mg">10mg</option>
-          <option value="12.5mg">12.5mg</option>
-          <option value="15mg">15mg</option>
-        </select>
-
-        <div id="proof-id" class="mt-4 hidden">
-          <label class="block mb-2 font-semibold">Upload Valid Proof of ID</label>
-          <input type="file" name="proof_of_id" class="w-full" />
-        </div>
-        <div id="prescription-div" class="mt-4 hidden">
-          <label class="block mb-2 font-semibold">Upload Previous Prescription</label>
-          <input type="file" name="previous_prescription" class="w-full" />
-        </div>
-        <div id="video-div" class="mt-4 hidden">
-          <label class="block mb-2 font-semibold">Upload a short video (on scale & verification)</label>
-          <input type="file" name="video_upload" accept="video/*" class="w-full" />
+        <div class="flex justify-between">
+          <button type="button" @click="step = 1"
+            class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Back</button>
+          <button type="button" @click="step = 3"
+            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Next</button>
         </div>
       </div>
 
-      <!-- Billing Address -->
-      <fieldset class="mt-6 border border-gray-300 p-4 rounded">
-        <legend class="font-semibold text-lg text-gray-700 mb-4">Billing Address</legend>
-        <div>
-          <label class="block mb-2 font-semibold">Address Line 1</label>
-          <input type="text" name="billing_address_1" required class="w-full border px-4 py-2 rounded" />
-        </div>
-        <div>
-          <label class="block mt-4 mb-2 font-semibold">Address Line 2</label>
-          <input type="text" name="billing_address_2" class="w-full border px-4 py-2 rounded" />
-        </div>
-        <div class="md:flex md:space-x-4">
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">City</label>
-            <input type="text" name="billing_city" required class="w-full border px-4 py-2 rounded" />
-          </div>
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">State/Region</label>
-            <input type="text" name="billing_state" required class="w-full border px-4 py-2 rounded" />
-          </div>
-        </div>
-        <div class="md:flex md:space-x-4">
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">Postcode</label>
-            <input type="text" name="billing_postcode" required class="w-full border px-4 py-2 rounded" />
-          </div>
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">Country</label>
-            <input type="text" name="billing_country" required class="w-full border px-4 py-2 rounded" />
-          </div>
-        </div>
-      </fieldset>
+      <!-- Step 3: Review & Consent -->
+      <div x-show="step === 3">
+        <h2 class="text-2xl font-bold mb-4">Step 3: Consent & Submit</h2>
 
-      <!-- Shipping Address -->
-      <fieldset class="mt-6 border border-gray-300 p-4 rounded">
-        <legend class="font-semibold text-lg text-gray-700 mb-4">Shipping Address</legend>
-        <div>
-          <label class="block mb-2 font-semibold">Address Line 1</label>
-          <input type="text" name="shipping_address_1" required class="w-full border px-4 py-2 rounded" />
-        </div>
-        <div>
-          <label class="block mt-4 mb-2 font-semibold">Address Line 2</label>
-          <input type="text" name="shipping_address_2" class="w-full border px-4 py-2 rounded" />
-        </div>
-        <div class="md:flex md:space-x-4">
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">City</label>
-            <input type="text" name="shipping_city" required class="w-full border px-4 py-2 rounded" />
-          </div>
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">State/Region</label>
-            <input type="text" name="shipping_state" required class="w-full border px-4 py-2 rounded" />
-          </div>
-        </div>
-        <div class="md:flex md:space-x-4">
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">Postcode</label>
-            <input type="text" name="shipping_postcode" required class="w-full border px-4 py-2 rounded" />
-          </div>
-          <div class="mt-4 md:flex-1">
-            <label class="block mb-2 font-semibold">Country</label>
-            <input type="text" name="shipping_country" required class="w-full border px-4 py-2 rounded" />
-          </div>
-        </div>
-      </fieldset>
+        <!-- Consent Section -->
+        <fieldset class="mb-6">
+          <legend class="font-semibold mb-2">General Consent</legend>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_general" required>
+            I am aware of the patient website Terms & Conditions and I have agreed to continue.
+          </label>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_medicine" required>
+            I have received information on the risks and benefits of the medicine, and I have had the opportunity to ask questions. The medical information I have provided is true and accurate to the best of my knowledge, and I consent to the medicine being administered.
+          </label>
+        </fieldset>
 
-      <!-- Terms & Consent -->
-      <div class="mt-6">
-        <label class="block font-semibold mb-2">Agree to Terms & Conditions? *</label>
-        <select name="treatment_consent" required class="w-full p-2 border rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+        <fieldset class="mb-6">
+          <legend class="font-semibold mb-2">Data Protection & Record</legend>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_data_storage" required>
+            I understand that my personal information will be securely uploaded to the website’s Database and kept in line with data protection regulations.
+          </label>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_data_use" required>
+            I authorize the collection, storage, and secure transmission of my information for the purposes mentioned above.
+          </label>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_account" required>
+            I acknowledge that after the consultation, the details of my medication and consultations will be accessible through my Online account.
+          </label>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_staff_contact" required>
+            I understand I can speak to staff about any queries regarding the consultation or my data rights.
+          </label>
+        </fieldset>
 
-        <label class="block font-semibold mb-2 mt-4">Agree to seek medical help if side-effects? *</label>
-        <select name="side_effects_agreement" required class="w-full p-2 border rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+        <fieldset class="mb-6">
+          <legend class="font-semibold mb-2">Medication Use</legend>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_side_effects" required>
+            The intended user will stop using this medicine and seek medical attention if unusual side effects occur.
+          </label>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_user_only" required>
+            The medicine is solely for use by the intended user.
+          </label>
+          <label class="block mb-4">
+            <input type="checkbox" name="consent_leaflet" required>
+            The intended user will read the patient information leaflet supplied with this medication.
+          </label>
+        </fieldset>
 
-        <label class="block font-semibold mb-2 mt-4">Confirm you're over 18 and agree? *</label>
-        <select name="over_18" required class="w-full p-2 border rounded">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
-      </div>
+        <fieldset class="mb-6">
+          <legend class="font-semibold mb-2">Age & Terms</legend>
+          <label class="block mb-2">
+            <input type="checkbox" name="consent_18" required>
+            I am over 18 and I agree to the Terms and Conditions
+          </label>
+        </fieldset>
 
-      <div class="mt-6 text-center">
-        <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded font-semibold text-lg">Submit & Pay</button>
+        <div class="flex justify-between">
+          <button type="button" @click="step = 2"
+            class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">Back</button>
+          <button type="submit"
+            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Submit & Pay</button>
+        </div>
       </div>
     </form>
-  </div>
+  </main>
 
-  <!-- Scripts -->
-  <script>
-    // BMI Calculator
-    const heightInput = document.querySelector('input[name="height"]');
-    const weightInput = document.querySelector('input[name="weight"]');
-    const bmiInput = document.querySelector('input[name="bmi"]');
-
-    function calculateBMI() {
-      const height = parseFloat(heightInput.value);
-      const weight = parseFloat(weightInput.value);
-      if (height > 0 && weight > 0) {
-        const heightM = height / 100;
-        const bmi = weight / (heightM * heightM);
-        bmiInput.value = bmi.toFixed(2);
-      } else {
-        bmiInput.value = '';
-      }
-    }
-
-    heightInput?.addEventListener('input', calculateBMI);
-    weightInput?.addEventListener('input', calculateBMI);
-
-    // Upload logic
-    const strengthSelect = document.getElementById('mounjaro_strength');
-    const proofID = document.getElementById('proof-id');
-    const prescription = document.getElementById('prescription-div');
-    const video = document.getElementById('video-div');
-
-    function toggleUploads() {
-      const value = strengthSelect.value;
-      const show = value !== "";
-      video.classList.toggle("hidden", !show);
-      proofID.classList.toggle("hidden", !show);
-      prescription.classList.toggle("hidden", value === "2.5mg" || !show);
-    }
-
-    strengthSelect.addEventListener("change", toggleUploads);
-    window.addEventListener("DOMContentLoaded", toggleUploads);
-
-    // Redirect after Netlify submit
-    document.getElementById("consultation-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const form = this;
-
-      // Create FormData and submit to Netlify
-      const data = new FormData(form);
-      fetch("/", {
-        method: "POST",
-        body: data,
-      }).then(() => {
-        // Redirect to dummy Stripe test payment
-        window.location.href = "https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc";
-      }).catch(err => alert("Submission error. Please try again."));
-    });
-  </script>
+  <footer class="bg-white border-t mt-10">
+    <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-500">
+      &copy; 2025 PharmaLogic. All rights reserved.
+    </div>
+  </footer>
 </body>
+
 </html>
