@@ -130,10 +130,99 @@
       </fieldset>
 
       <!-- Step 2: Billing & Shipping -->
-      <!-- ... No changes to this section -->
+     <fieldset id="step-2" class="hidden">
+  <legend class="font-bold mb-4 text-xl text-gray-700">Billing & Shipping Address</legend>
+
+  <h3 class="font-semibold mb-2">Billing Address</h3>
+  <label class="block mb-3">
+    Address Line 1*:
+    <input type="text" name="billing_address_1" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Address Line 2:
+    <input type="text" name="billing_address_2" class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    City*:
+    <input type="text" name="billing_city" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    State/Region*:
+    <input type="text" name="billing_state" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Postcode*:
+    <input type="text" name="billing_postcode" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Country*:
+    <input type="text" name="billing_country" required class="border p-2 w-full rounded" />
+  </label>
+
+  <label class="block mb-3">
+    Mobile Number* (UK format: +44XXXXXXXXXX):
+    <input type="tel" name="billing_phone" id="billing-phone" required pattern="^\+44\d{10}$" class="border p-2 w-full rounded" placeholder="+441234567890" />
+    <p id="billing-phone-error" class="text-red-600 text-sm mt-1 hidden">Invalid UK phone number format. Use +44 followed by 10 digits.</p>
+  </label>
+
+  <label class="block mb-3">
+    Email Address*:
+    <input type="email" name="billing_email" id="billing-email" required class="border p-2 w-full rounded" />
+  </label>
+
+  <h3 class="font-semibold mt-6 mb-2">Shipping Address</h3>
+  <label class="block mb-3">
+    Address Line 1*:
+    <input type="text" name="shipping_address_1" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Address Line 2:
+    <input type="text" name="shipping_address_2" class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    City*:
+    <input type="text" name="shipping_city" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    State/Region*:
+    <input type="text" name="shipping_state" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Postcode*:
+    <input type="text" name="shipping_postcode" required class="border p-2 w-full rounded" />
+  </label>
+  <label class="block mb-3">
+    Country*:
+    <input type="text" name="shipping_country" required class="border p-2 w-full rounded" />
+  </label>
+
+  <div class="mt-6">
+    <button type="button" id="back-to-step-1" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold mr-4">Back</button>
+    <button type="button" id="to-step-3" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">Next: Review & Pay</button>
+  </div>
+</fieldset>
 
       <!-- Step 3: Review & Payment -->
-      <!-- ... No changes to this section -->
+<fieldset id="step-3" class="hidden">
+  <legend class="font-bold mb-4 text-xl text-gray-700">Review & Payment</legend>
+
+  <!-- Summary display -->
+  <div id="review-summary" class="mb-6 bg-gray-50 border p-4 rounded max-h-96 overflow-y-auto">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Payment error (for future use) -->
+  <div id="payment-error" class="text-red-600 mb-4 hidden"></div>
+
+  <!-- Navigation -->
+  <button type="button" id="back-to-step-2" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded font-semibold mr-4">
+    Back
+  </button>
+  <button type="submit" id="pay-button" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-semibold">
+    Submit & Pay
+  </button>
+</fieldset>
+
     </form>
   </div>
 
@@ -142,28 +231,88 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('consultation-form');
   if (!form) return;
 
-  // ... all logic remains same
+  // BMI Live Calculation
+  const weightInput = document.getElementById('weight');
+  const heightInput = document.getElementById('height');
+  const bmiOutput = document.getElementById('bmi');
 
-  toStep2Btn.addEventListener('click', () => {
-    if (!form?.checkValidity?.() || !validatePhone()) {
-      form?.reportValidity?.();
+  function calculateBMI() {
+    const weight = parseFloat(weightInput.value);
+    const heightCm = parseFloat(heightInput.value);
+    if (!weight || !heightCm || heightCm <= 0) {
+      bmiOutput.value = '';
       return;
     }
-    step1.classList.add('hidden');
-    step2.classList.remove('hidden');
-    window.scrollTo(0, 0);
-  });
 
-  toStep3Btn.addEventListener('click', () => {
-    if (!form?.checkValidity?.()) {
-      form?.reportValidity?.();
-      return;
+    const heightM = heightCm / 100;
+    const bmi = weight / (heightM * heightM);
+    bmiOutput.value = bmi.toFixed(1);
+  }
+
+  weightInput.addEventListener('input', calculateBMI);
+  heightInput.addEventListener('input', calculateBMI);
+
+  // Navigation elements
+  const toStep2Btn = document.getElementById('to-step-2');
+  const toStep3Btn = document.getElementById('to-step-3');
+  const step1 = document.getElementById('step-1');
+  const step2 = document.getElementById('step-2');
+  const step3 = document.getElementById('step-3');
+
+  function validatePhone() {
+    return true; // Placeholder — extend as needed
+  }
+
+  // ✅ Review Summary Generator
+  function populateReview() {
+    const reviewDiv = document.getElementById('review-summary');
+    const formData = new FormData(form);
+    let html = '<h3 class="font-semibold mb-2">Review Your Details</h3><ul class="list-disc pl-5 space-y-2">';
+
+    for (const [key, value] of formData.entries()) {
+      if (
+        key === "proof_of_id" ||
+        key === "previous_prescription" ||
+        key === "video_upload"
+      ) continue;
+      if (!value) continue;
+
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      html += `<li><strong>${label}:</strong> ${value}</li>`;
     }
-    populateReview();
-    step2.classList.add('hidden');
-    step3.classList.remove('hidden');
-    window.scrollTo(0, 0);
-  });
+
+    html += '</ul>';
+    reviewDiv.innerHTML = html;
+  }
+
+  if (toStep2Btn) {
+    toStep2Btn.addEventListener('click', () => {
+      if (!form?.checkValidity?.() || !validatePhone()) {
+        form?.reportValidity?.();
+        return;
+      }
+      if (step1 && step2) {
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+      }
+      window.scrollTo(0, 0);
+    });
+  }
+
+  if (toStep3Btn) {
+    toStep3Btn.addEventListener('click', () => {
+      if (!form?.checkValidity?.()) {
+        form?.reportValidity?.();
+        return;
+      }
+      populateReview();
+      if (step2 && step3) {
+        step2.classList.add('hidden');
+        step3.classList.remove('hidden');
+      }
+      window.scrollTo(0, 0);
+    });
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -174,8 +323,19 @@ document.addEventListener('DOMContentLoaded', function () {
     alert('Form submitted successfully! Redirecting to payment...');
     window.location.href = "https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc";
   });
+
+  // ✅ Billing Phone Validation Logic
+  const billingPhoneInput = document.getElementById('billing-phone');
+  const billingPhoneError = document.getElementById('billing-phone-error');
+
+  if (billingPhoneInput && billingPhoneError) {
+    billingPhoneInput.addEventListener('input', () => {
+      const valid = /^\+44\d{10}$/.test(billingPhoneInput.value.trim());
+      billingPhoneInput.setCustomValidity(valid ? "" : "Invalid UK phone number.");
+      billingPhoneError.classList.toggle('hidden', valid);
+    });
+  }
 });
 </script>
 
-</body>
-</html>
+  
