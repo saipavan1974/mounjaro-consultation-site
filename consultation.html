@@ -6,9 +6,9 @@
   <title>Consultation & Payment - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
-
   <!-- HEADER -->
   <div class="bg-green-900 text-white px-6 py-4 flex items-center justify-between shadow-md">
     <a href="index.html"><img src="logo.jpeg" alt="PharmaLogic Logo" class="h-10" /></a>
@@ -227,9 +227,14 @@
   </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
   const form = document.getElementById('consultation-form');
   if (!form) return;
+
+  // Supabase Config
+  const supabaseUrl = 'https://pqtrinpdlyyafwkbrrbj.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMTg1NjEsImV4cCI6MjA2ODU5NDU2MX0.YMpFYMKNri00L0peXkMN2KyCHX7zQzWLSgP8zR-Cpbs';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
   // BMI Live Calculation
   const weightInput = document.getElementById('weight');
@@ -243,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
       bmiOutput.value = '';
       return;
     }
-
     const heightM = heightCm / 100;
     const bmi = weight / (heightM * heightM);
     bmiOutput.value = bmi.toFixed(1);
@@ -252,7 +256,6 @@ document.addEventListener('DOMContentLoaded', function () {
   weightInput.addEventListener('input', calculateBMI);
   heightInput.addEventListener('input', calculateBMI);
 
-  // Navigation elements
   const toStep2Btn = document.getElementById('to-step-2');
   const toStep3Btn = document.getElementById('to-step-3');
   const step1 = document.getElementById('step-1');
@@ -260,82 +263,83 @@ document.addEventListener('DOMContentLoaded', function () {
   const step3 = document.getElementById('step-3');
 
   function validatePhone() {
-    return true; // Placeholder — extend as needed
+    return true; // placeholder
   }
 
-  // ✅ Review Summary Generator
   function populateReview() {
     const reviewDiv = document.getElementById('review-summary');
     const formData = new FormData(form);
     let html = '<h3 class="font-semibold mb-2">Review Your Details</h3><ul class="list-disc pl-5 space-y-2">';
-
     for (const [key, value] of formData.entries()) {
-      if (
-        key === "proof_of_id" ||
-        key === "previous_prescription" ||
-        key === "video_upload"
-      ) continue;
+      if (['proof_of_id','previous_prescription','video_upload'].includes(key)) continue;
       if (!value) continue;
-
       const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       html += `<li><strong>${label}:</strong> ${value}</li>`;
     }
-
     html += '</ul>';
     reviewDiv.innerHTML = html;
   }
 
   if (toStep2Btn) {
     toStep2Btn.addEventListener('click', () => {
-      if (!form?.checkValidity?.() || !validatePhone()) {
-        form?.reportValidity?.();
+      if (!form.checkValidity() || !validatePhone()) {
+        form.reportValidity();
         return;
       }
-      if (step1 && step2) {
-        step1.classList.add('hidden');
-        step2.classList.remove('hidden');
-      }
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
       window.scrollTo(0, 0);
     });
   }
 
   if (toStep3Btn) {
     toStep3Btn.addEventListener('click', () => {
-      if (!form?.checkValidity?.()) {
-        form?.reportValidity?.();
+      if (!form.checkValidity()) {
+        form.reportValidity();
         return;
       }
       populateReview();
-      if (step2 && step3) {
-        step2.classList.add('hidden');
-        step3.classList.remove('hidden');
-      }
+      step2.classList.add('hidden');
+      step3.classList.remove('hidden');
       window.scrollTo(0, 0);
     });
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!form?.checkValidity?.() || !validatePhone()) {
-      form?.reportValidity?.();
+    if (!form.checkValidity() || !validatePhone()) {
+      form.reportValidity();
       return;
     }
-    alert('Form submitted successfully! Redirecting to payment...');
-    window.location.href = "https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc";
+
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      if (value && typeof value === 'string') {
+        data[key] = value;
+      }
+    });
+
+    const { error } = await supabase.from('consultations').insert([data]);
+    if (error) {
+      alert('Submission failed: ' + error.message);
+    } else {
+      alert('Form submitted! Redirecting to payment...');
+      window.location.href = 'https://buy.stripe.com/test_8wM6qt99m4Hv2zO3cc';
+    }
   });
 
-  // ✅ Billing Phone Validation Logic
   const billingPhoneInput = document.getElementById('billing-phone');
   const billingPhoneError = document.getElementById('billing-phone-error');
-
   if (billingPhoneInput && billingPhoneError) {
     billingPhoneInput.addEventListener('input', () => {
       const valid = /^\+44\d{10}$/.test(billingPhoneInput.value.trim());
-      billingPhoneInput.setCustomValidity(valid ? "" : "Invalid UK phone number.");
+      billingPhoneInput.setCustomValidity(valid ? '' : 'Invalid UK phone number.');
       billingPhoneError.classList.toggle('hidden', valid);
     });
   }
 });
 </script>
 
-  
+</body>
+</html>
