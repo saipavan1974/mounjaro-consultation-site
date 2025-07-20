@@ -2,93 +2,152 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - PharmaLogic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PharmaLogic Payment</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white p-8 rounded shadow-md max-w-md w-full">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">Complete Your Payment</h1>
 
-  <div class="max-w-xl mx-auto bg-white shadow-lg p-8 mt-10 rounded-lg">
-    <h2 class="text-2xl font-bold mb-6 text-blue-800">Checkout & Payment</h2>
+    <!-- Payment Request Button Container -->
+    <div id="payment-request-button" class="mb-6"></div>
 
     <form id="payment-form" class="space-y-4">
-      <div>
-        <label class="block font-semibold">Selected Mounjaro Strength</label>
-        <select id="strength" required class="w-full border px-3 py-2 rounded">
-          <option value="2.5mg - £115.00">2.5mg - £115.00</option>
-          <option value="5mg - £145.00">5mg - £145.00</option>
-          <option value="7.5mg - £170.00">7.5mg - £170.00</option>
-          <option value="10mg - £185.00">10mg - £185.00</option>
-          <option value="12.5mg - £200.00">12.5mg - £200.00</option>
-          <option value="15mg - £200.00">15mg - £200.00</option>
-        </select>
-      </div>
+      <label class="block">
+        Card Details
+        <div id="card-element" class="border p-3 rounded bg-white"></div>
+      </label>
+      <div id="card-errors" class="text-red-600 text-sm mt-2"></div>
 
-      <div id="card-element" class="w-full border px-3 py-2 rounded"></div>
-      <div id="card-errors" class="text-red-600 mt-2"></div>
-
-      <button type="submit" class="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 font-semibold">
-        Pay Securely
+      <button id="submit-button" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded font-semibold" type="submit" disabled>
+        Pay Now
       </button>
     </form>
-
-    <p class="text-sm text-gray-500 mt-4 text-center">Use test card <strong>4242 4242 4242 4242</strong> with any future date, CVC 123, and any ZIP.</p>
   </div>
 
   <script>
-    const stripe = Stripe('pk_test_51NbUXxFxxxxxxREPLACE_WITH_YOURS'); // Replace with your Stripe publishable key
-    const elements = stripe.elements();
-    const card = elements.create('card');
-    card.mount('#card-element');
+    // Replace with your own Stripe publishable key
+    const stripe = Stripe("pk_test_51Hxxxxxxxxxxxxxxxxxxxxxxxxxx"); 
 
-    card.on('change', function(event) {
-      const displayError = document.getElementById('card-errors');
-      if (event.error) {
-        displayError.textContent = event.error.message;
+    const elements = stripe.elements();
+    const cardElement = elements.create('card', {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#32325d',
+          '::placeholder': { color: '#a0aec0' }
+        },
+        invalid: { color: '#e53e3e' }
+      }
+    });
+    cardElement.mount('#card-element');
+
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit-button');
+    const cardErrors = document.getElementById('card-errors');
+    const paymentRequestButtonDiv = document.getElementById('payment-request-button');
+
+    // Disable submit button until card element is complete
+    cardElement.on('change', function(event) {
+      if (event.complete) {
+        submitButton.disabled = false;
+        cardErrors.textContent = '';
+      } else if (event.error) {
+        submitButton.disabled = true;
+        cardErrors.textContent = event.error.message;
       } else {
-        displayError.textContent = '';
+        submitButton.disabled = true;
+        cardErrors.textContent = '';
       }
     });
 
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async function(event) {
-      event.preventDefault();
+    // Setup Payment Request API for Apple Pay / Google Pay
+    const paymentRequest = stripe.paymentRequest({
+      country: 'GB',
+      currency: 'gbp',
+      total: {
+        label: 'PharmaLogic Consultation',
+        amount: 20000, // Amount in pence (£200.00)
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+    });
 
-      const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: 'card',
-        card: card,
+    paymentRequest.canMakePayment().then(function(result) {
+      if (result) {
+        // Show the Payment Request Button if supported
+        const prButton = elements.create('paymentRequestButton', {
+          paymentRequest: paymentRequest,
+          style: {
+            paymentRequestButton: {
+              type: 'default',
+              theme: 'light',
+              height: '40px',
+            },
+          },
+        });
+        prButton.mount('#payment-request-button');
+      } else {
+        paymentRequestButtonDiv.style.display = 'none';
+      }
+    });
+
+    paymentRequest.on('paymentmethod', async (ev) => {
+      // Confirm the PaymentIntent with the payment method returned by Payment Request
+      const {error, paymentIntent} = await stripe.confirmCardPayment(
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzAxODU2MSwiZXhwIjoyMDY4NTk0NTYxfQ.K9Mrnr0JsjsFlVfrKQaemP2nNFi5qoTSocdTPKWal9U', // <-- Replace with your client secret from your backend
+        {payment_method: ev.paymentMethod.id},
+        {handleActions: false}
+      );
+
+      if (error) {
+        ev.complete('fail');
+        cardErrors.textContent = error.message;
+      } else {
+        ev.complete('success');
+        if (paymentIntent.status === 'requires_action') {
+          // Handle 3D Secure authentication
+          const {error: errorAction, paymentIntent: paymentIntentAction} = await stripe.confirmCardPayment(
+            'pi_test_client_secret_here'
+          );
+          if (errorAction) {
+            cardErrors.textContent = errorAction.message;
+          } else {
+            window.location.href = 'success.html';
+          }
+        } else {
+          window.location.href = 'success.html';
+        }
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitButton.disabled = true;
+      cardErrors.textContent = '';
+
+      // Ideally, fetch PaymentIntent client secret from your backend here
+      // For demo purposes, use a placeholder string below:
+      const clientSecret = 'pi_test_client_secret_here'; // <-- Replace with real secret from your backend
+
+      const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            // Optionally add billing details here
+          }
+        }
       });
 
       if (error) {
-        document.getElementById('card-errors').textContent = error.message;
-        return;
-      }
-
-      const selectedStrength = document.getElementById('strength').value;
-
-      const res = await fetch('https://pqtrinpdlyyafwkbrrbj.supabase.co/functions/v1/process-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': 'REPLACE_WITH_SUPABASE_ANON_KEY'
-        },
-        body: JSON.stringify({
-          strength: selectedStrength,
-          payment_method_id: paymentMethod.id
-        })
-      });
-
-      const result = await res.json();
-
-      if (result.error) {
-        document.getElementById('card-errors').textContent = result.error.message;
-      } else {
-        alert('Payment and order successful!');
-        window.location.href = '/thankyou.html';
+        cardErrors.textContent = error.message;
+        submitButton.disabled = false;
+      } else if (paymentIntent.status === 'succeeded') {
+        window.location.href = 'success.html';
       }
     });
   </script>
-
 </body>
 </html>
