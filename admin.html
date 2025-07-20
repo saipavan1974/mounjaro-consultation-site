@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,9 +32,9 @@
   </div>
 
 <script>
-// Replace with your actual Supabase project credentials
-const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_OR_SERVICE_ROLE_KEY';
+// Supabase credentials
+const SUPABASE_URL = 'https://pqtrinpdlyyafwkbrrbj.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMTg1NjEsImV4cCI6MjA2ODU5NDU2MX0.YMpFYMKNri00L0peXkMN2KyCHX7zQzWLSgP8zR-Cpbs';
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function formatTimeSince(dateString) {
@@ -70,9 +71,9 @@ async function loadOrders() {
 
     row.innerHTML = `
       <td class="px-4 py-2 font-medium text-blue-800">
-        #${order.id.slice(0, 6)}<br>
-        ${order.full_name}<br>
-        <a href="mailto:${order.email}" class="text-blue-500">${order.email}</a><br>
+        #${order.id}<br>
+        ${order.full_name || ''}<br>
+        <a href="mailto:${order.email}" class="text-blue-500">${order.email || ''}</a><br>
         ${order.phone || ''}
       </td>
       <td class="px-4 py-2">
