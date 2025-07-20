@@ -7,7 +7,7 @@
   <style>
     /* Branding Colors */
     :root {
-      --primary-color: #004a99; /* You can change this to your brand color */
+      --primary-color: #004a99;
       --secondary-color: #0071bc;
       --background-color: #f7f9fc;
       --text-color: #333;
@@ -23,6 +23,7 @@
       background: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
+      padding-top: 110px; /* accommodate header height */
     }
     a {
       color: var(--secondary-color);
@@ -31,22 +32,70 @@
     a:hover {
       text-decoration: underline;
     }
+
+    /* Header */
+    header {
+      background: #064635;
+      color: white;
+      padding: 1.5rem 5rem 1.5rem 5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    header a.brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: white;
+      text-decoration: none;
+    }
+    header a.brand img {
+      height: 50px;
+      width: auto;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a, nav button {
+      background: white;
+      color: #064635;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    nav a:hover, nav button:hover {
+      background: #1a7c3e;
+      color: white;
+    }
+    nav button {
+      /* ensure button styling consistent with links */
+    }
+
     /* Container */
     .container {
       max-width: 900px;
-      margin: 2rem auto 4rem auto;
+      margin: 0 auto 4rem auto;
       background: white;
       padding: 2rem 2.5rem;
       border-radius: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    /* Logo removed, so header just empty or can have brand text */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-weight: bold;
-      font-size: 1.8rem;
-      color: var(--primary-color);
     }
     /* Headings */
     h1, h2, h3 {
@@ -95,7 +144,6 @@
       list-style: disc inside;
       margin-left: 1rem;
     }
-    /* Removed .image-section entirely */
     /* FAQ */
     .faq-item {
       margin-bottom: 1rem;
@@ -108,33 +156,73 @@
       transition: max-height 0.4s ease;
     }
     .faq-item.open {
-      max-height: 500px; /* large enough to fit content */
+      max-height: 500px;
       transition: max-height 0.6s ease;
     }
     .faq-item p {
       margin: 0.7rem 0 1rem 0;
       padding-right: 1rem;
     }
+
+    /* Footer */
+    footer {
+      background: #064635;
+      color: white;
+      padding: 3rem 5rem;
+      margin-top: 4rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    footer h3 {
+      color: white;
+      margin-bottom: 1rem;
+    }
+    footer div.grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    footer strong {
+      font-weight: 600;
+    }
+    footer .copyright {
+      border-top: 1px solid rgba(255,255,255,0.3);
+      padding-top: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
     /* Responsive */
-    @media (max-width: 700px) {
-      .container {
-        padding: 1.5rem 1rem;
-        margin: 1rem;
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem 2rem;
       }
-      h1 {
-        font-size: 2rem;
+      footer {
+        padding: 2rem 2rem;
       }
-      h2 {
-        font-size: 1.5rem;
+      body {
+        padding-top: 130px;
       }
     }
   </style>
 </head>
 <body>
-  <main class="container" role="main" aria-label="Mounjaro Product Information">
-    <header>
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand" aria-label="PharmaLogic Home">
+      <!-- Update with your logo image if you want -->
+      <img src="logo.jpeg" alt="PharmaLogic Logo" />
       PharmaLogic
-    </header>
+    </a>
+    <nav role="navigation" aria-label="Primary Navigation">
+      <a href="index.html">Home</a>
+      <button type="button" onclick="window.location.href='product.html'">Product</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" role="main" aria-label="Mounjaro Product Information">
 
     <h1>Mounjaro (Tirzepatide) Injection Pens</h1>
 
@@ -205,6 +293,42 @@
       This product is prescription-only and should only be used under the supervision of a healthcare professional. This information is intended to support, not replace, advice from your healthcare provider. Always consult your pharmacist or doctor if you have any questions or concerns about your treatment.
     </p>
   </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="grid">
+      <div>
+        <h3>About Us</h3>
+        <p>
+          Founded in 2009, Pharmalogic has developed and specialised in becoming the first healthcare group to establish a dedicated care home service, alongside our independent, family-run, community chemists throughout the NorthWest region.
+          <br><br>
+          Our Superintendent Pharmacist is Haroon Amanji (Reg. No. 2070534)
+        </p>
+      </div>
+
+      <div>
+        <h3>Head Office</h3>
+        <p>
+          <strong>Address</strong><br />
+          464 Ranglet Road<br />
+          Walton Summit Centre<br />
+          Preston<br />
+          PR5 8AR
+        </p>
+        <br />
+        <p><strong>Tel</strong><br />+44 (0) 1772 620526</p>
+        <br />
+        <p><strong>Fax</strong><br />+44 (0) 1772 697328</p>
+        <br />
+        <p><strong>Email</strong><br />info@pharmalogic.co.uk</p>
+      </div>
+    </div>
+
+    <div class="copyright">
+      All Rights Reserved. MDS Healthcare Limited. Copyright 2020–2024 ©<br />
+      464 Ranglet Road, Walton Summit Centre, Preston PR5 8AR Tel: 01772 620526
+    </div>
+  </footer>
 
   <script>
     // FAQ Collapsible Logic
