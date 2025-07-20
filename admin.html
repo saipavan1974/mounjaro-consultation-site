@@ -10,6 +10,7 @@
     .status-processing { background-color: #d1e7dd; color: #0f5132; padding: 5px 10px; border-radius: 6px; }
     .status-pending { background-color: #fff3cd; color: #664d03; padding: 5px 10px; border-radius: 6px; }
     .status-approved { background-color: #cfe2ff; color: #084298; padding: 5px 10px; border-radius: 6px; }
+    .status-rejected { background-color: #f8d7da; color: #842029; padding: 5px 10px; border-radius: 6px; }
     .login-container { max-width: 400px; margin: auto; padding-top: 100px; }
     .navbar-brand { font-weight: bold; }
   </style>
@@ -43,9 +44,10 @@
       <label for="statusFilter" class="form-label">Filter by Status</label>
       <select id="statusFilter" class="form-select" onchange="filterStatus()">
         <option value="all">All</option>
-        <option value="Processing">Processing</option>
-        <option value="Pending">Pending</option>
-        <option value="Approved">Approved</option>
+        <option value="processing">Processing</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
       </select>
     </div>
 
@@ -111,39 +113,64 @@
       tbody.innerHTML = "";
       data.forEach((s, i) => {
         const d = s.data;
-        const status = d.status || "Pending";
-        const cls = status === "Processing"
-          ? "status-processing"
-          : status === "Approved"
-          ? "status-approved"
-          : "status-pending";
-        const idlink = d.idupload || d["id-upload"] || "";
-        const viewLink = idlink ? `<a href="${idlink}" target="_blank">View</a>` : "-";
+
+        // Status
+        const statusRaw = (d.status || "Pending").toLowerCase();
+        let cls = "status-pending";
+        switch (statusRaw) {
+          case "processing":
+            cls = "status-processing";
+            break;
+          case "approved":
+            cls = "status-approved";
+            break;
+          case "rejected":
+            cls = "status-rejected";
+            break;
+        }
+
+        // Customer name clickable (opens detail page)
+        const customerName = d["full-name"] || d.name || "-";
+        const customerNameLink = `<a href="order-detail.html?id=${s.id}" target="_blank" rel="noopener noreferrer">${customerName}</a>`;
+
+        // Product (try multiple keys)
+        const product = d.product || d["product-strength"] || "-";
+
+        // Address
+        const address = d.address || "-";
+
+        // ID Upload: show "Uploaded" if link present, else "Not Uploaded"
+        const idLink = d.idupload || d["id-upload"] || "";
+        const idUploadText = idLink ? `<a href="${idLink}" target="_blank" rel="noopener noreferrer">Uploaded</a>` : "Not Uploaded";
+
+        // Email and Phone
+        const emailPhone = `${d.email || ""}${d.email && d.phone ? "<br/>" : ""}${d.phone || ""}`;
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>#${s.number || i + 1}</td>
-          <td>${d["full-name"] || d.name || "-"}</td>
-          <td>${d.email || ""}<br/>${d.phone || ""}</td>
-          <td>${d.product || d["product-strength"] || "-"}</td>
-          <td><span class="${cls}">${status}</span></td>
-          <td>${d.address || "-"}</td>
-          <td>${viewLink}</td>
+          <td>${customerNameLink}</td>
+          <td>${emailPhone}</td>
+          <td>${product}</td>
+          <td><span class="${cls}">${statusRaw.charAt(0).toUpperCase() + statusRaw.slice(1)}</span></td>
+          <td>${address}</td>
+          <td>${idUploadText}</td>
           <td>${new Date(s.created_at).toLocaleString()}</td>
           <td>
-            <button class="btn btn-sm btn-outline-success" onclick="markApproved('${s.id}')">
-              Mark Approved
-            </button>
-          </td>`;
+            <button class="btn btn-sm btn-outline-success me-1" onclick="updateStatus('${s.id}', 'Approved')">Approve</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="updateStatus('${s.id}', 'Rejected')">Reject</button>
+          </td>
+        `;
         tbody.appendChild(tr);
       });
     }
 
     // Filter orders by status
     function filterStatus() {
-      const f = document.getElementById("statusFilter").value;
+      const f = document.getElementById("statusFilter").value.toLowerCase();
       renderTable(f === "all"
         ? allSubmissions
-        : allSubmissions.filter(s => (s.data.status || "Pending") === f)
+        : allSubmissions.filter(s => ((s.data.status || "Pending").toLowerCase() === f))
       );
     }
 
@@ -153,8 +180,8 @@
       allSubmissions.forEach((s, i) => {
         const d = s.data;
         csv += `#${s.number || i + 1},"${d["full-name"] || d.name || ""}","${d.email || ""}","${d.phone || ""}",` +
-               `"${d.product || d["product‑strength"] || ""}","${d.status || "Pending"}","${d.address || ""}",` +
-               `"${d.idupload || d["id‑upload"] || ""}","${new Date(s.created_at).toLocaleString()}"\n`;
+               `"${d.product || d["product-strength"] || ""}","${d.status || "Pending"}","${d.address || ""}",` +
+               `"${d.idupload || d["id-upload"] || ""}","${new Date(s.created_at).toLocaleString()}"\n`;
       });
       const blob = new Blob([csv], { type: "text/csv" });
       const a = document.createElement("a");
@@ -163,8 +190,8 @@
       a.click();
     }
 
-    // Mark order as approved via API
-    async function markApproved(id) {
+    // Update order status via API (Approve or Reject)
+    async function updateStatus(id, newStatus) {
       try {
         const res = await fetch(
           `https://api.netlify.com/api/v1/submissions/${id}`,
@@ -174,11 +201,11 @@
               Authorization: `Bearer ${netlifyToken}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ fields: { status: "Approved" } }),
+            body: JSON.stringify({ fields: { status: newStatus } }),
           }
         );
         if (!res.ok) throw new Error("Status update failed");
-        loadSubmissions();
+        loadSubmissions(); // reload table after status update
       } catch (err) {
         alert(err.message);
       }
