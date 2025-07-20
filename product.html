@@ -40,24 +40,13 @@
       border-radius: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    /* Logo */
+    /* Logo removed, so header just empty or can have brand text */
     header {
       text-align: center;
       margin-bottom: 2rem;
-    }
-    header img {
-      max-width: 180px;
-      height: auto;
-      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
-      animation: fadeInDown 1.5s ease forwards;
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    @keyframes fadeInDown {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      font-weight: bold;
+      font-size: 1.8rem;
+      color: var(--primary-color);
     }
     /* Headings */
     h1, h2, h3 {
@@ -106,40 +95,7 @@
       list-style: disc inside;
       margin-left: 1rem;
     }
-    /* Image Section */
-    .image-section {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .image-section img {
-      flex: 1 1 30%;
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-      opacity: 0;
-      animation: fadeInUp 1.5s ease forwards;
-      transform: translateY(20px);
-    }
-    .image-section img:nth-child(1) {
-      animation-delay: 0.2s;
-    }
-    .image-section img:nth-child(2) {
-      animation-delay: 0.5s;
-    }
-    .image-section img:nth-child(3) {
-      animation-delay: 0.8s;
-    }
-    /* Fade in animation */
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+    /* Removed .image-section entirely */
     /* FAQ */
     .faq-item {
       margin-bottom: 1rem;
@@ -171,31 +127,16 @@
       h2 {
         font-size: 1.5rem;
       }
-      .image-section {
-        flex-direction: column;
-      }
-      .image-section img {
-        flex: none;
-        width: 100%;
-        margin-bottom: 1rem;
-      }
     }
   </style>
 </head>
 <body>
   <main class="container" role="main" aria-label="Mounjaro Product Information">
     <header>
-      <!-- Replace the src below with your actual logo file -->
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Pharmacy_cross_icon.svg/120px-Pharmacy_cross_icon.svg.png" alt="Pharmacy Logo" />
+      PharmaLogic
     </header>
 
     <h1>Mounjaro (Tirzepatide) Injection Pens</h1>
-
-    <section class="image-section" aria-label="Weight Loss Medication Illustrations">
-      <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=80" alt="Healthy lifestyle and weight management" />
-      <img src="https://images.unsplash.com/photo-1588776814546-1bc6a8f7c535?auto=format&fit=crop&w=600&q=80" alt="Medical injection pen for diabetes" />
-      <img src="https://images.unsplash.com/photo-1588774064058-8667ee11b9de?auto=format&fit=crop&w=600&q=80" alt="Diabetes care and medication" />
-    </section>
 
     <h2>Available Strengths</h2>
     <ul>
@@ -272,7 +213,7 @@
         const contentId = faqHeader.getAttribute('aria-controls');
         const content = document.getElementById(contentId);
         const isOpen = content.classList.contains('open');
-        
+
         // Close all FAQ items
         document.querySelectorAll('.faq-item.open').forEach(openItem => {
           openItem.classList.remove('open');
