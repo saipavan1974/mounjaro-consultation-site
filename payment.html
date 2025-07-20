@@ -3,150 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PharmaLogic Payment</title>
+  <title>Payment - PharmaLogic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-  <div class="bg-white p-8 rounded shadow-md max-w-md w-full">
-    <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">Complete Your Payment</h1>
+<body class="bg-gray-100 text-gray-800">
+  <div class="max-w-xl mx-auto p-6 bg-white rounded shadow mt-10">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-800">Complete Your Payment</h1>
+    
+    <div id="payment-message" class="mb-4 text-center text-green-600 font-semibold hidden"></div>
+    <div id="payment-error" class="mb-4 text-center text-red-600 font-semibold hidden"></div>
+    
+    <div id="payment-form-container">
+      <form id="payment-form">
+        <div id="card-element" class="border p-4 rounded mb-4"></div>
+        <button id="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded" type="submit" disabled>
+          Pay Now
+        </button>
+      </form>
+    </div>
 
-    <!-- Payment Request Button Container -->
-    <div id="payment-request-button" class="mb-6"></div>
-
-    <form id="payment-form" class="space-y-4">
-      <label class="block">
-        Card Details
-        <div id="card-element" class="border p-3 rounded bg-white"></div>
-      </label>
-      <div id="card-errors" class="text-red-600 text-sm mt-2"></div>
-
-      <button id="submit-button" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded font-semibold" type="submit" disabled>
-        Pay Now
-      </button>
-    </form>
+    <div id="loading" class="text-center mt-4 hidden">Loading...</div>
   </div>
 
   <script>
-    // Replace with your own Stripe publishable key
-    const stripe = Stripe("pk_test_51Hxxxxxxxxxxxxxxxxxxxxxxxxxx"); 
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Your Stripe publishable key
+      const stripe = Stripe('pk_test_YourPublishableKeyHere');
 
-    const elements = stripe.elements();
-    const cardElement = elements.create('card', {
-      style: {
-        base: {
-          fontSize: '16px',
-          color: '#32325d',
-          '::placeholder': { color: '#a0aec0' }
-        },
-        invalid: { color: '#e53e3e' }
-      }
-    });
-    cardElement.mount('#card-element');
-
-    const form = document.getElementById('payment-form');
-    const submitButton = document.getElementById('submit-button');
-    const cardErrors = document.getElementById('card-errors');
-    const paymentRequestButtonDiv = document.getElementById('payment-request-button');
-
-    // Disable submit button until card element is complete
-    cardElement.on('change', function(event) {
-      if (event.complete) {
-        submitButton.disabled = false;
-        cardErrors.textContent = '';
-      } else if (event.error) {
-        submitButton.disabled = true;
-        cardErrors.textContent = event.error.message;
-      } else {
-        submitButton.disabled = true;
-        cardErrors.textContent = '';
-      }
-    });
-
-    // Setup Payment Request API for Apple Pay / Google Pay
-    const paymentRequest = stripe.paymentRequest({
-      country: 'GB',
-      currency: 'gbp',
-      total: {
-        label: 'PharmaLogic Consultation',
-        amount: 20000, // Amount in pence (£200.00)
-      },
-      requestPayerName: true,
-      requestPayerEmail: true,
-    });
-
-    paymentRequest.canMakePayment().then(function(result) {
-      if (result) {
-        // Show the Payment Request Button if supported
-        const prButton = elements.create('paymentRequestButton', {
-          paymentRequest: paymentRequest,
-          style: {
-            paymentRequestButton: {
-              type: 'default',
-              theme: 'light',
-              height: '40px',
-            },
-          },
-        });
-        prButton.mount('#payment-request-button');
-      } else {
-        paymentRequestButtonDiv.style.display = 'none';
-      }
-    });
-
-    paymentRequest.on('paymentmethod', async (ev) => {
-      // Confirm the PaymentIntent with the payment method returned by Payment Request
-      const {error, paymentIntent} = await stripe.confirmCardPayment(
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxdHJpbnBkbHl5YWZ3a2JycmJqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzAxODU2MSwiZXhwIjoyMDY4NTk0NTYxfQ.K9Mrnr0JsjsFlVfrKQaemP2nNFi5qoTSocdTPKWal9U', // <-- Replace with your client secret from your backend
-        {payment_method: ev.paymentMethod.id},
-        {handleActions: false}
+      // Initialize Supabase client
+      const supabase = supabase.createClient(
+        'https://pqtrinpdlyyafwkbrrbj.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
       );
 
-      if (error) {
-        ev.complete('fail');
-        cardErrors.textContent = error.message;
-      } else {
-        ev.complete('success');
-        if (paymentIntent.status === 'requires_action') {
-          // Handle 3D Secure authentication
-          const {error: errorAction, paymentIntent: paymentIntentAction} = await stripe.confirmCardPayment(
-            'pi_test_client_secret_here'
-          );
-          if (errorAction) {
-            cardErrors.textContent = errorAction.message;
-          } else {
-            window.location.href = 'success.html';
-          }
-        } else {
-          window.location.href = 'success.html';
-        }
+      const consultationId = localStorage.getItem('consultation_id');
+
+      if (!consultationId) {
+        alert('No consultation session found. Please start the consultation first.');
+        window.location.href = 'consultation.html'; // change to your form page if different
+        return;
       }
-    });
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitButton.disabled = true;
-      cardErrors.textContent = '';
+      const loadingEl = document.getElementById('loading');
+      const paymentMessage = document.getElementById('payment-message');
+      const paymentError = document.getElementById('payment-error');
+      const paymentForm = document.getElementById('payment-form');
+      const submitBtn = document.getElementById('submit');
 
-      // Ideally, fetch PaymentIntent client secret from your backend here
-      // For demo purposes, use a placeholder string below:
-      const clientSecret = 'pi_test_client_secret_here'; // <-- Replace with real secret from your backend
+      // Show loading while fetching client secret
+      loadingEl.classList.remove('hidden');
 
-      const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            // Optionally add billing details here
+      // Call your backend to create PaymentIntent and get client_secret
+      // Replace this URL with your actual backend API endpoint that creates payment intents
+      const createPaymentIntentUrl = 'https://your-backend.com/create-payment-intent';
+
+      let clientSecret;
+
+      try {
+        const res = await fetch(createPaymentIntentUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ consultation_id: consultationId }) // send consultation ID to backend
+        });
+
+        if (!res.ok) throw new Error('Failed to create payment intent');
+
+        const data = await res.json();
+        clientSecret = data.clientSecret;
+
+      } catch (err) {
+        loadingEl.classList.add('hidden');
+        paymentError.textContent = 'Error initializing payment: ' + err.message;
+        paymentError.classList.remove('hidden');
+        paymentForm.style.display = 'none';
+        return;
+      }
+
+      loadingEl.classList.add('hidden');
+      submitBtn.disabled = false;
+
+      // Set up Stripe Elements
+      const elements = stripe.elements();
+      const cardElement = elements.create('card', {
+        style: {
+          base: {
+            fontSize: '16px',
+            color: '#32325d',
+            '::placeholder': {
+              color: '#a0aec0'
+            }
+          },
+          invalid: {
+            color: '#e53e3e'
           }
         }
       });
 
-      if (error) {
-        cardErrors.textContent = error.message;
-        submitButton.disabled = false;
-      } else if (paymentIntent.status === 'succeeded') {
-        window.location.href = 'success.html';
-      }
+      cardElement.mount('#card-element');
+
+      // Handle form submission
+      paymentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        paymentError.classList.add('hidden');
+        paymentMessage.classList.add('hidden');
+        loadingEl.classList.remove('hidden');
+
+        // Confirm the card payment
+        const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement
+          }
+        });
+
+        if (error) {
+          // Show error to customer
+          paymentError.textContent = error.message;
+          paymentError.classList.remove('hidden');
+          loadingEl.classList.add('hidden');
+          submitBtn.disabled = false;
+          return;
+        }
+
+        if (paymentIntent.status === 'succeeded') {
+          // Payment successful, update Supabase
+          const { error: updateError } = await supabase.from('consultations')
+            .update({ paid: true, paid_at: new Date().toISOString() })
+            .eq('id', consultationId);
+
+          loadingEl.classList.add('hidden');
+
+          if (updateError) {
+            paymentError.textContent = 'Payment succeeded but failed to update record: ' + updateError.message;
+            paymentError.classList.remove('hidden');
+            return;
+          }
+
+          paymentMessage.textContent = 'Payment successful! Thank you for your order.';
+          paymentMessage.classList.remove('hidden');
+
+          // Clear localStorage consultation id since payment is done
+          localStorage.removeItem('consultation_id');
+
+          // Optionally disable the form or redirect after a delay
+          paymentForm.style.display = 'none';
+
+          // Redirect after 5 seconds or so, adjust URL as needed
+          setTimeout(() => {
+            window.location.href = 'thankyou.html'; // or wherever you want
+          }, 5000);
+        }
+      });
     });
   </script>
 </body>
