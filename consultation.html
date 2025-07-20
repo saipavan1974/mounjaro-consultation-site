@@ -4,59 +4,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Consultation Form - Multi-Step</title>
+  <title>Consultation Form</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
 
 <body class="bg-gray-50">
-  <header class="bg-white shadow">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-blue-600">PharmaLogic</h1>
-      <nav>
-        <a href="index.html" class="text-gray-700 hover:text-blue-500 mr-4">Home</a>
-        <a href="products.html" class="text-gray-700 hover:text-blue-500">Products</a>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container mx-auto px-4 py-8" x-data="{ step: 1 }">
+  <div x-data="{ step: 1 }" class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">Online Consultation</h1>
     <form name="consultation" method="POST" data-netlify="true">
-      <input type="hidden" name="form-name" value="consultation">
 
-      <!-- Step 1: Medical Consultation -->
+      <!-- Step 1: Consultation -->
       <div x-show="step === 1">
-        <h2 class="text-2xl font-bold mb-4">Step 1: Medical Consultation</h2>
-        <!-- Add your medical questions here -->
-        <label class="block mb-2">
-          Full Name:
-          <input type="text" name="full_name" required class="w-full border p-2 rounded" />
-        </label>
+        <h2 class="text-xl font-semibold mb-4">Step 1: Medical Consultation</h2>
 
-        <label class="block mb-2">
-          Date of Birth:
-          <input type="date" name="dob" required class="w-full border p-2 rounded" />
-        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" name="first_name" placeholder="First Name" required class="border p-2 rounded">
+          <input type="text" name="last_name" placeholder="Last Name" required class="border p-2 rounded">
+          <input type="email" name="email" placeholder="Email" required class="border p-2 rounded">
+          <input type="date" name="dob" placeholder="Date of Birth" required class="border p-2 rounded">
 
-        <label class="block mb-2">
-          Weight (kg):
-          <input type="number" name="weight" required class="w-full border p-2 rounded" />
-        </label>
+          <input type="number" name="weight" placeholder="Weight (kg)" required class="border p-2 rounded" id="weight" oninput="calculateBMI()">
+          <input type="number" name="height" placeholder="Height (cm)" required class="border p-2 rounded" id="height" oninput="calculateBMI()">
 
-        <label class="block mb-2">
-          Height (cm):
-          <input type="number" name="height" required class="w-full border p-2 rounded" />
-        </label>
+          <input type="text" name="bmi" placeholder="BMI" readonly class="border p-2 rounded bg-gray-100" id="bmi">
 
-        <label class="block mb-4">
-          Do you have any allergies?
-          <textarea name="allergies" required class="w-full border p-2 rounded"></textarea>
-        </label>
+          <textarea name="existing_conditions" placeholder="Do you have any existing medical conditions?" required class="border p-2 rounded col-span-2"></textarea>
 
-        <button type="button" @click="step = 2"
-          class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Next</button>
+          <textarea name="current_medications" placeholder="Are you currently taking any medications?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="allergies" placeholder="Do you have any allergies to medication or other substances?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="smoking_status" placeholder="Do you smoke or use any tobacco products?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="alcohol_use" placeholder="How often do you consume alcohol?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="medical_history" placeholder="Have you had any surgeries or hospitalizations in the past?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="pregnancy" placeholder="(For female patients) Are you currently pregnant or breastfeeding?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="mounjaro_use_reason" placeholder="What is your reason for wanting to use Mounjaro?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="previous_weight_loss_attempts" placeholder="Have you tried any other weight loss methods or medications in the past?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="side_effects_concerns" placeholder="Do you have any concerns about possible side effects?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="expectations" placeholder="What are your expectations from this treatment?" required class="border p-2 rounded col-span-2"></textarea>
+
+          <textarea name="additional_comments" placeholder="Any other relevant information you’d like to share with us?" class="border p-2 rounded col-span-2"></textarea>
+        </div>
+
+        <div class="mt-6 text-right">
+          <button type="button" @click="step++" class="bg-blue-600 text-white px-4 py-2 rounded">Next</button>
+        </div>
       </div>
-
+      
       <!-- Step 2: Billing & Shipping -->
       <div x-show="step === 2">
         <h2 class="text-2xl font-bold mb-4">Step 2: Billing & Shipping</h2>
@@ -98,9 +100,7 @@
       <!-- Step 3: Review & Consent -->
       <div x-show="step === 3">
         <h2 class="text-2xl font-bold mb-4">Step 3: Consent & Submit</h2>
-
-        <!-- Consent Section -->
-        <fieldset class="mb-6">
+         <fieldset class="mb-6">
           <legend class="font-semibold mb-2">General Consent</legend>
           <label class="block mb-2">
             <input type="checkbox" name="consent_general" required>
