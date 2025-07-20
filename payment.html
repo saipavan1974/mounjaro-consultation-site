@@ -2,150 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stripe Test Payment - PharmaLogic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pharmalogic - SlimPro Injection</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #333;
+    }
+    button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-xl mx-auto p-6 bg-white rounded shadow mt-10">
-    <h1 class="text-2xl font-bold mb-6 text-center text-blue-800">Test Payment</h1>
+<body>
+  <div class="container">
+    <h1>Buy SlimPro Injection</h1>
+    <p><strong>Price:</strong> $149.00 (Monthly Pack)</p>
+    <p>SlimPro Injection is a fast-acting monthly weight loss solution. Recommended by certified pharmacists and clinically tested.</p>
 
-    <div id="payment-message" class="mb-4 text-center text-green-600 font-semibold hidden"></div>
-    <div id="payment-error" class="mb-4 text-center text-red-600 font-semibold hidden"></div>
+    <!-- Stripe Buy Button -->
+    <a href="https://dashboard.stripe.com/test/invoices/in_1Rn2kgQslD1AIGDm07OF6sE6/edit" target="_blank">
+      <button>Buy Now with Stripe</button>
+    </a>
 
-    <form id="payment-form">
-      <label for="postal-code" class="block mb-2 font-semibold">Postal Code</label>
-      <input id="postal-code" name="postal_code" type="text" maxlength="10" class="border p-2 rounded w-full mb-4" placeholder="Enter postal code" required />
+    <hr />
 
-      <div id="card-element" class="border p-4 rounded mb-4"></div>
+    <h2>Submit Your Info</h2>
+    <p>(For prescription and follow-up communication)</p>
 
-      <button id="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded" type="submit" disabled>
-        Pay Now
-      </button>
+    <form id="customer-form">
+      <input type="text" name="full_name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <button type="submit">Submit Info</button>
     </form>
 
-    <div id="loading" class="text-center mt-4 hidden">Loading...</div>
+    <p id="form-response" style="margin-top:1rem;"></p>
   </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Stripe test publishable key
-    const stripe = Stripe('pk_test_51N...YOUR_TEST_PUBLISHABLE_KEY_HERE');
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // Initialize Supabase client (replace with your keys)
-    const supabase = supabase.createClient(
-      'https://pqtrinpdlyyafwkbrrbj.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    const supabase = createClient(
+      "https://pqzwwfpniowuqgjluxuk.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxend3ZnBuaW93dXFnamx1eHVrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMjc2MzQsImV4cCI6MjA2ODYwMzYzNH0.BiPdb5T5QGH-Q1fRZzNytns6u6iqn_ZdcEUpnljO8pI"
     );
 
-    // For testing, we'll hardcode a dummy consultation ID here:
-    // Replace with your actual logic or use localStorage if you saved it
-    const consultationId = 'test-consultation-123';
+    const form = document.getElementById('customer-form');
+    const responseText = document.getElementById('form-response');
 
-    const paymentForm = document.getElementById('payment-form');
-    const submitBtn = document.getElementById('submit');
-    const postalCodeInput = document.getElementById('postal-code');
-    const paymentMessage = document.getElementById('payment-message');
-    const paymentError = document.getElementById('payment-error');
-    const loadingEl = document.getElementById('loading');
-
-    // Show loading while fetching client secret
-    loadingEl.classList.remove('hidden');
-
-    // Your backend URL to create PaymentIntent in test mode
-    const createPaymentIntentUrl = 'http://localhost:4242/create-payment-intent';
-
-    let clientSecret;
-
-    try {
-      const res = await fetch(createPaymentIntentUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ consultation_id: consultationId })
-      });
-      if (!res.ok) throw new Error('Failed to create payment intent');
-      const data = await res.json();
-      clientSecret = data.clientSecret;
-    } catch (err) {
-      loadingEl.classList.add('hidden');
-      paymentError.textContent = 'Error initializing payment: ' + err.message;
-      paymentError.classList.remove('hidden');
-      paymentForm.style.display = 'none';
-      return;
-    }
-
-    loadingEl.classList.add('hidden');
-    submitBtn.disabled = false;
-
-    // Setup Stripe Elements
-    const elements = stripe.elements();
-    const cardElement = elements.create('card', {
-      style: {
-        base: {
-          fontSize: '16px',
-          color: '#32325d',
-          '::placeholder': { color: '#a0aec0' }
-        },
-        invalid: { color: '#e53e3e' }
-      },
-      hidePostalCode: true
-    });
-    cardElement.mount('#card-element');
-
-    paymentForm.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      submitBtn.disabled = true;
-      paymentError.classList.add('hidden');
-      paymentMessage.classList.add('hidden');
-      loadingEl.classList.remove('hidden');
+      const formData = new FormData(form);
+      const fullName = formData.get('full_name');
+      const email = formData.get('email');
 
-      const postalCode = postalCodeInput.value.trim();
-
-      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: { address: { postal_code: postalCode } }
-        }
+      const { error } = await supabase.from('customers').insert({
+        full_name: fullName,
+        email: email
       });
 
       if (error) {
-        paymentError.textContent = error.message;
-        paymentError.classList.remove('hidden');
-        loadingEl.classList.add('hidden');
-        submitBtn.disabled = false;
-        return;
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        // Update Supabase to mark payment as received
-        const { error: updateError } = await supabase.from('consultations')
-          .update({ paid: true, paid_at: new Date().toISOString() })
-          .eq('id', consultationId);
-
-        loadingEl.classList.add('hidden');
-
-        if (updateError) {
-          paymentError.textContent = 'Payment succeeded but failed to update record: ' + updateError.message;
-          paymentError.classList.remove('hidden');
-          return;
-        }
-
-        paymentMessage.textContent = 'Payment successful! Thank you for your order.';
-        paymentMessage.classList.remove('hidden');
-
-        // Clear consultation ID (if stored in localStorage)
-        localStorage.removeItem('consultation_id');
-
-        paymentForm.style.display = 'none';
-
-        setTimeout(() => {
-          window.location.href = 'thankyou.html';
-        }, 5000);
+        responseText.innerText = "❌ Something went wrong. Please try again.";
+        responseText.style.color = "red";
+      } else {
+        responseText.innerText = "✅ Info submitted successfully!";
+        responseText.style.color = "green";
+        form.reset();
       }
     });
-  });
-</script>
+  </script>
 </body>
 </html>
