@@ -44,11 +44,6 @@
     <p><strong>Price:</strong> £125.00 (Monthly Pack)</p>
     <p>Mounjaro weight loss injection is a fast-acting monthly weight loss solution. Recommended by certified pharmacists and clinically tested.</p>
 
-    <!-- Stripe Buy Button -->
-    <a href="https://buy.stripe.com/test_14A00lcfU1gH7b838k3cc00" target="_blank">
-      <button>Buy Now with Stripe</button>
-    </a>
-
     <hr />
 
     <h2>Submit Your Info</h2>
@@ -57,7 +52,7 @@
     <form id="customer-form">
       <input type="text" name="full_name" placeholder="Full Name" required />
       <input type="email" name="email" placeholder="Email Address" required />
-      <button type="submit">Submit Info</button>
+      <button type="submit">Submit Info & Buy Now</button>
     </form>
 
     <p id="form-response" style="margin-top:1rem;"></p>
@@ -73,7 +68,7 @@
       apiKey: "AIzaSyD4RMS3cZEcwcxmEK2mfCH6uS9fP_uz3-A",
       authDomain: "pharmalogic-weightloss-cfbf2.firebaseapp.com",
       projectId: "pharmalogic-weightloss-cfbf2",
-      storageBucket: "pharmalogic-weightloss-cfbf2.firebasestorage.app",
+      storageBucket: "pharmalogic-weightloss-cfbf2.appspot.com",
       messagingSenderId: "508838130812",
       appId: "1:508838130812:web:09888169609b9b361245f9"
     };
@@ -104,9 +99,12 @@
           submitted_at: new Date()
         });
 
-        responseText.innerText = "✅ Info submitted successfully!";
+        responseText.innerText = "✅ Info submitted! Redirecting to payment...";
         responseText.style.color = "green";
-        form.reset();
+
+        setTimeout(() => {
+          window.location.href = "https://buy.stripe.com/test_14A00lcfU1gH7b838k3cc00";
+        }, 1500);
       } catch (error) {
         console.error("Firestore Error:", error);
         responseText.innerText = "❌ Error saving data. Please try again.";
