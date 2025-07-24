@@ -52,7 +52,7 @@
           <input type="text" id="bmi" name="bmi" readonly class="border p-2 w-full rounded bg-gray-100" />
         </label>
 
-          <label class="block mb-3">Do you have diabetes?*
+        <label class="block mb-3">Do you have diabetes?*
           <select name="t2d" required class="border p-2 w-full rounded">
             <option value="">Select...</option>
             <option value="Yes">Yes</option>
@@ -177,6 +177,15 @@
       const phoneInput = document.getElementById('billing-phone');
       const phoneError = document.getElementById('billing-phone-error');
 
+      const weightInput = document.getElementById('weight');
+      const heightInput = document.getElementById('height');
+      const bmiInput = document.getElementById('bmi');
+
+      const mounjaroStrengthSelect = document.getElementById('mounjaro_strength');
+      const proofIdDiv = document.getElementById('proof-id');
+      const prescriptionDiv = document.getElementById('prescription-div');
+      const videoDiv = document.getElementById('video-div');
+
       function scrollTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -188,7 +197,42 @@
         return valid;
       }
 
+      // BMI calculation
+      function calculateBMI() {
+        const w = parseFloat(weightInput.value);
+        const h = parseFloat(heightInput.value);
+        if (!w || !h || h <= 0) {
+          bmiInput.value = '';
+          return null;
+        }
+        const bmi = w / ((h / 100) ** 2);
+        bmiInput.value = bmi.toFixed(1);
+        return bmi;
+      }
+
+      weightInput.addEventListener('input', calculateBMI);
+      heightInput.addEventListener('input', calculateBMI);
+
+      // Strength change - show/hide upload options
+      mounjaroStrengthSelect.addEventListener('change', () => {
+        const val = mounjaroStrengthSelect.value;
+        if (val === '2.5mg') {
+          proofIdDiv.classList.remove('hidden');
+          videoDiv.classList.remove('hidden');
+          prescriptionDiv.classList.add('hidden');
+        } else if (val) {
+          proofIdDiv.classList.remove('hidden');
+          prescriptionDiv.classList.remove('hidden');
+          videoDiv.classList.remove('hidden');
+        } else {
+          proofIdDiv.classList.add('hidden');
+          prescriptionDiv.classList.add('hidden');
+          videoDiv.classList.add('hidden');
+        }
+      });
+
       toStep2Btn.addEventListener('click', () => {
+        // Check form validity for step 1 inputs
         const requiredInputs = step1.querySelectorAll('input, select, textarea');
         for (let input of requiredInputs) {
           if (!input.checkValidity()) {
@@ -196,6 +240,14 @@
             return;
           }
         }
+
+        // Check BMI condition
+        const bmi = calculateBMI();
+        if (bmi === null || bmi < 27) {
+          alert('Your BMI is below 27. According to the rules, you are not allowed to take medication.');
+          return;
+        }
+
         step1.classList.add('hidden');
         step2.classList.remove('hidden');
         scrollTop();
@@ -231,25 +283,6 @@
         scrollTop();
       });
 
-      // BMI calculation
-      document.getElementById('weight').addEventListener('input', calculateBMI);
-      document.getElementById('height').addEventListener('input', calculateBMI);
-
-      function calculateBMI() {
-        const w = parseFloat(document.getElementById('weight').value);
-        const h = parseFloat(document.getElementById('height').value);
-        if (!w || !h || h <= 0) return document.getElementById('bmi').value = '';
-        const bmi = w / ((h / 100) ** 2);
-        document.getElementById('bmi').value = bmi.toFixed(1);
-      }
-
-      document.getElementById('mounjaro_strength').addEventListener('change', () => {
-        const show = mounjaro_strength.value !== '';
-        document.getElementById('proof-id').classList.toggle('hidden', !show);
-        document.getElementById('prescription-div').classList.toggle('hidden', !show);
-        document.getElementById('video-div').classList.toggle('hidden', !show);
-      });
-
       function populateReview() {
         const summary = document.getElementById('review-summary');
         const data = new FormData(form);
@@ -262,13 +295,9 @@
         summary.innerHTML = html;
       }
 
-      // Redirect to payment.html on clicking Submit & Pay
       document.getElementById('pay-button').addEventListener('click', () => {
         window.location.href = 'payment.html';
       });
-
-      // Removed form submission to supabase and Stripe from your original code
-      // as per your request to just redirect to payment.html
     });
   </script>
 </body>
