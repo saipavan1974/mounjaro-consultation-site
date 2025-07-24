@@ -131,7 +131,6 @@
   <!-- Skip to main content link for keyboard users -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- Header -->
   <header>
   <a href="index.html" class="brand" aria-label="PharmaLogic Home">
     <img src="logo.jpeg" alt="PharmaLogic Logo" loading="lazy" />
@@ -142,23 +141,73 @@
     <button type="button" onclick="window.location.href='product.html'">Product</button>
 
     <!-- User Account Dropdown -->
-<div class="relative group">
-  <button
-    class="bg-white text-green-900 font-semibold py-2 px-4 rounded hover:bg-green-800 hover:text-white transition"
-    aria-haspopup="true"
-    aria-expanded="false"
-  >
-    Account
-  </button>
-  <div
-    class="absolute right-0 mt-2 hidden group-hover:block bg-white rounded-lg shadow-lg z-50 w-40 text-left"
-  >
-    <a href="login.html" class="block px-4 py-2 hover:bg-green-100 text-green-900">Login</a>
-    <a href="register.html" class="block px-4 py-2 hover:bg-green-100 text-green-900">Register</a>
-  </div>
-</div>
-</nav>
+    <div class="relative" id="account-dropdown">
+      <button
+        id="account-btn"
+        class="bg-white text-green-900 font-semibold py-2 px-4 rounded hover:bg-green-800 hover:text-white transition"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="dropdown-menu"
+        type="button"
+        onclick="toggleDropdown()"
+      >
+        Account
+      </button>
+      <div
+        id="dropdown-menu"
+        class="absolute right-0 mt-2 hidden bg-white rounded-lg shadow-lg z-50 w-40 text-left"
+        role="menu"
+        aria-labelledby="account-btn"
+      >
+        <a href="login.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Login</a>
+        <a href="register.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Register</a>
+      </div>
+    </div>
+  </nav>
 </header>
+
+<script>
+  function toggleDropdown() {
+    const menu = document.getElementById('dropdown-menu');
+    const btn = document.getElementById('account-btn');
+    const isHidden = menu.classList.contains('hidden');
+
+    // Toggle visibility
+    if (isHidden) {
+      menu.classList.remove('hidden');
+      btn.setAttribute('aria-expanded', 'true');
+    } else {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  // Close dropdown if clicked outside
+  window.addEventListener('click', (event) => {
+    const dropdown = document.getElementById('account-dropdown');
+    const btn = document.getElementById('account-btn');
+    const menu = document.getElementById('dropdown-menu');
+
+    if (!dropdown.contains(event.target)) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Optional: close dropdown on Escape key press
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      const menu = document.getElementById('dropdown-menu');
+      const btn = document.getElementById('account-btn');
+      if (!menu.classList.contains('hidden')) {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.focus();
+      }
+    }
+  });
+</script>
+
 
   <main id="main-content">
     <!-- Hero Section with Slideshow Left -->
