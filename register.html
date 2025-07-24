@@ -1,66 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <title>Register – Pharmalogic</title>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PharmaLogic - Register</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Create your PharmaLogic account for weight loss consultation and orders." />
+  <meta name="author" content="PharmaLogic" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Theme color for mobile browsers -->
+  <meta name="theme-color" content="#064635" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <!-- Tailwind & AOS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-    input, button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-    }
-    button {
-      background-color: #28a745;
+    /* Skip link styling */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #064635;
       color: white;
-      border: none;
+      padding: 8px 16px;
+      z-index: 1001;
+      transition: top 0.3s ease;
+      font-weight: 700;
+      text-decoration: none;
     }
-    .error {
-      color: red;
-      margin-bottom: 10px;
+    .skip-link:focus {
+      top: 0;
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    header {
+      background: #064635;
+      color: white;
+      padding: 1.5rem 5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+    header a.brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: white;
+      text-decoration: none;
+    }
+    header a.brand img {
+      height: 50px;
+      width: auto;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    nav a, nav button {
+      background: white;
+      color: #064635;
+      font-weight: 600;
+      padding: 0.5rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+    nav a:hover, nav button:hover, nav a:focus, nav button:focus {
+      background: #1a7c3e;
+      color: white;
+      outline: none;
+    }
+
+    body {
+      padding-top: 110px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f3f4f6; /* Tailwind gray-100 */
+    }
+
+    /* Responsive adjustments for nav on smaller screens */
+    @media (max-width: 640px) {
+      header {
+        padding: 1rem 1.5rem;
+      }
+      nav {
+        gap: 0.5rem;
+      }
     }
   </style>
 </head>
-<body>
-  <h2>Create an Account</h2>
-  <div class="error" id="errorMsg"></div>
-  <input type="email" id="email" placeholder="Email" required />
-  <input type="password" id="password" placeholder="Password (min 6 chars)" required />
-  <button onclick="register()">Register</button>
-  <p>Already have an account? <a href="login.html">Login here</a></p>
 
+<body class="bg-gray-100 font-sans">
+  <!-- Skip to main content link for keyboard users -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand" aria-label="PharmaLogic Home">
+      <img src="logo.jpeg" alt="PharmaLogic Logo" loading="lazy" />
+      PharmaLogic
+    </a>
+    <nav role="navigation" aria-label="Primary Navigation" class="flex gap-4 items-center">
+      <a href="index.html">Home</a>
+      <button type="button" onclick="window.location.href='product.html'">Product</button>
+
+      <!-- User Account Dropdown -->
+      <div class="relative" id="account-dropdown">
+        <button
+          id="account-btn"
+          class="bg-white text-green-900 font-semibold py-2 px-4 rounded hover:bg-green-800 hover:text-white transition"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="dropdown-menu"
+          type="button"
+          onclick="toggleDropdown()"
+        >
+          Account
+        </button>
+        <div
+          id="dropdown-menu"
+          class="absolute right-0 mt-2 hidden bg-white rounded-lg shadow-lg z-50 w-40 text-left"
+          role="menu"
+          aria-labelledby="account-btn"
+        >
+          <a href="login.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Login</a>
+          <a href="register.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Register</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content" class="max-w-md mx-auto my-12 p-8 bg-white rounded shadow-lg" role="main" aria-label="Register form">
+    <h1 class="text-3xl font-bold text-green-900 mb-6 text-center">Create a PharmaLogic Account</h1>
+    <form action="/your-register-endpoint" method="POST" class="space-y-6" novalidate>
+      <div>
+        <label for="fullname" class="block text-gray-700 font-semibold mb-1">Full Name</label>
+        <input
+          type="text"
+          id="fullname"
+          name="fullname"
+          required
+          placeholder="Your full name"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
+          autocomplete="name"
+        />
+      </div>
+      <div>
+        <label for="email" class="block text-gray-700 font-semibold mb-1">Email address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="you@example.com"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
+          autocomplete="email"
+        />
+      </div>
+      <div>
+        <label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          placeholder="Create a password"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
+          autocomplete="new-password"
+          minlength="8"
+        />
+      </div>
+      <div>
+        <label for="password_confirm" class="block text-gray-700 font-semibold mb-1">Confirm Password</label>
+        <input
+          type="password"
+          id="password_confirm"
+          name="password_confirm"
+          required
+          placeholder="Confirm your password"
+          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
+          autocomplete="new-password"
+          minlength="8"
+        />
+      </div>
+      <button
+        type="submit"
+        class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 rounded shadow-md transition"
+        aria-label="Submit registration form"
+      >
+        Register
+      </button>
+    </form>
+    <p class="mt-6 text-center text-gray-600">
+      Already have an account?
+      <a href="login.html" class="text-green-700 hover:text-green-900 font-semibold underline">Login here</a>
+    </p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-green-900 text-white py-12 px-4 sm:px-6" role="contentinfo">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div>
+        <h3 class="text-lg font-semibold mb-4">About Us</h3>
+        <p class="text-sm leading-relaxed">
+          Founded in 2009, Pharmalogic has developed and specialised in becoming the first healthcare group to establish a dedicated care home service, alongside our independent, family-run, community chemists throughout the NorthWest region.
+          <br /><br />
+          Our Superintendent Pharmacist is Haroon Amanji (Reg. No. 2070534)
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold mb-4">Head Office</h3>
+        <address class="not-italic text-sm">
+          <strong>Address</strong><br />
+          464 Ranglet Road<br />
+          Walton Summit Centre<br />
+          Preston<br />
+          PR5 8AR<br /><br />
+          <strong>Tel</strong><br />
+          <a href="tel:+441772620526" class="text-white underline hover:text-green-300">+44 (0) 1772 620526</a><br /><br />
+          <strong>Fax</strong><br />
+          +44 (0) 1772 697328<br /><br />
+          <strong>Email</strong><br />
+          <a href="mailto:info@pharmalogic.co.uk" class="text-white underline hover:text-green-300">info@pharmalogic.co.uk</a>
+        </address>
+      </div>
+    </div>
+    <div class="text-center text-xs mt-10 border-t border-gray-700 pt-4" role="contentinfo">
+      All Rights Reserved. MDS Healthcare Limited. Copyright 2020–2024 ©<br />
+      464 Ranglet Road, Walton Summit Centre, Preston PR5 8AR Tel: 01772 620526
+    </div>
+  </footer>
+
+  <!-- AOS Init -->
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD4RMS3cZEcwcxmEK2mfCH6uS9fP_uz3-A",
-      authDomain: "pharmalogic-weightloss-cfbf2.firebaseapp.com",
-      projectId: "pharmalogic-weightloss-cfbf2",
-      storageBucket: "pharmalogic-weightloss-cfbf2.firebasestorage.app",
-      messagingSenderId: "508838130812",
-      appId: "1:508838130812:web:09888169609b9b361245f9"
-    };
-    firebase.initializeApp(firebaseConfig);
+    AOS.init();
+  </script>
 
-    function register() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  <!-- Dropdown Script -->
+  <script>
+    function toggleDropdown() {
+      const menu = document.getElementById('dropdown-menu');
+      const btn = document.getElementById('account-btn');
+      const isHidden = menu.classList.contains('hidden');
 
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("Account created! Redirecting...");
-          window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-          document.getElementById("errorMsg").innerText = error.message;
-        });
+      if (isHidden) {
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      }
     }
+
+    window.addEventListener('click', (event) => {
+      const dropdown = document.getElementById('account-dropdown');
+      const btn = document.getElementById('account-btn');
+      const menu = document.getElementById('dropdown-menu');
+
+      if (!dropdown.contains(event.target)) {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        const menu = document.getElementById('dropdown-menu');
+        const btn = document.getElementById('account-btn');
+        if (!menu.classList.contains('hidden')) {
+          menu.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      }
+    });
   </script>
 </body>
 </html>
