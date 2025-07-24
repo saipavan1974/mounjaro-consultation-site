@@ -2,75 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Consultation Payment - PharmaLogic</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pharmalogic - Mounjaro weight loss Injection</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #333;
+    }
+    button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      box-sizing: border-box;
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
-    <h1 class="text-2xl font-bold mb-4 text-center text-green-700">Thank you for your purchase!</h1>
-    <p class="text-center mb-4">Please submit your info below for prescription follow-up.</p>
+<body>
+  <div class="container">
+    <h1>Buy Mounjaro 2.5mg Weight Loss Injection</h1>
+    <p><strong>Price:</strong> £125.00 (Monthly Pack)</p>
+    <p>Mounjaro weight loss injection is a fast-acting monthly weight loss solution. Recommended by certified pharmacists and clinically tested.</p>
+
+    <!-- Stripe Buy Button -->
+    <a href="https://buy.stripe.com/test_14A00lcfU1gH7b838k3cc00" target="_blank">
+      <button>Buy Now with Stripe</button>
+    </a>
+
+    <hr />
+
+    <h2>Submit Your Info</h2>
+    <p>(For prescription and follow-up communication)</p>
 
     <form id="customer-form">
-      <input type="text" name="full_name" placeholder="Full Name" required class="w-full mb-3 p-2 border rounded" />
-      <input type="email" name="email" placeholder="Email Address" required class="w-full mb-3 p-2 border rounded" />
-      <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 w-full">
-        Submit Info
-      </button>
+      <input type="text" name="full_name" placeholder="Full Name" required />
+      <input type="email" name="email" placeholder="Email Address" required />
+      <button type="submit">Submit Info</button>
     </form>
 
-    <p id="form-response" class="mt-4 text-center text-sm"></p>
+    <p id="form-response" style="margin-top:1rem;"></p>
   </div>
 
   <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <script>
-    // Your Firebase configuration (replace with your actual config if different)
+    // ✅ Your Firebase Configuration
     const firebaseConfig = {
-  apiKey: "AIzaSyD4RMS3cZEcwcxmEK2mfCH6uS9fP_uz3-A",
-  authDomain: "pharmalogic-weightloss-cfbf2.firebaseapp.com",
-  projectId: "pharmalogic-weightloss-cfbf2",
-  storageBucket: "pharmalogic-weightloss-cfbf2.firebasestorage.app",
-  messagingSenderId: "508838130812",
-  appId: "1:508838130812:web:09888169609b9b361245f9"
-};
+      apiKey: "AIzaSyD4RMS3cZEcwcxmEK2mfCH6uS9fP_uz3-A",
+      authDomain: "pharmalogic-weightloss-cfbf2.firebaseapp.com",
+      projectId: "pharmalogic-weightloss-cfbf2",
+      storageBucket: "pharmalogic-weightloss-cfbf2.firebasestorage.app",
+      messagingSenderId: "508838130812",
+      appId: "1:508838130812:web:09888169609b9b361245f9"
+    };
 
-    // Initialize Firebase
+    // ✅ Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Form submission
     const form = document.getElementById('customer-form');
     const responseText = document.getElementById('form-response');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const fullName = form.full_name.value.trim();
       const email = form.email.value.trim();
 
+      if (!fullName || !email) {
+        responseText.innerText = "❌ Please fill in all fields.";
+        responseText.style.color = "red";
+        return;
+      }
+
       try {
-        await db.collection("customers").add({
+        await db.collection('customers').add({
           full_name: fullName,
           email: email,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          submitted_at: new Date()
         });
 
-        responseText.textContent = "✅ Info submitted successfully!";
-        responseText.classList.remove("text-red-600");
-        responseText.classList.add("text-green-600");
+        responseText.innerText = "✅ Info submitted successfully!";
+        responseText.style.color = "green";
         form.reset();
       } catch (error) {
         console.error("Firestore Error:", error);
-        responseText.textContent = "❌ Something went wrong. Please try again.";
-        responseText.classList.remove("text-green-600");
-        responseText.classList.add("text-red-600");
+        responseText.innerText = "❌ Error saving data. Please try again.";
+        responseText.style.color = "red";
       }
     });
   </script>
