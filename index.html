@@ -141,6 +141,31 @@
       <a href="index.html">Home</a>
       <button type="button" onclick="window.location.href='product.html'">Product</button>
     </nav>
+    <a href="index.html" class="brand" aria-label="PharmaLogic Home">
+    <img src="logo.jpeg" alt="PharmaLogic Logo" loading="lazy" />
+    PharmaLogic
+  </a>
+  <nav role="navigation" aria-label="Primary Navigation" class="flex gap-4 items-center">
+    <a href="index.html">Home</a>
+    <button type="button" onclick="window.location.href='product.html'">Product</button>
+
+    <!-- User Account Dropdown -->
+    <div class="relative group">
+      <button
+        class="bg-white text-green-900 font-semibold py-2 px-4 rounded hover:bg-green-800 hover:text-white transition"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Account
+      </button>
+      <div
+        class="absolute right-0 mt-2 hidden group-hover:block bg-white rounded-lg shadow-lg z-50 w-40 text-left"
+      >
+        <a href="login.html" class="block px-4 py-2 hover:bg-green-100">Login</a>
+        <a href="register.html" class="block px-4 py-2 hover:bg-green-100">Register</a>
+      </div>
+    </div>
+  </nav>
   </header>
 
   <main id="main-content">
