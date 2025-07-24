@@ -144,31 +144,79 @@
   </header>
 
   <main id="main-content">
-    <!-- Hero Section with Slideshow -->
-    <section class="text-center bg-blue-100 py-12 px-4 sm:py-16 sm:px-6" data-aos="fade-up" aria-label="Hero section">
-      <h1 class="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">Weight Loss Medication Consultation</h1>
-      <p class="text-base sm:text-lg mb-8 text-gray-700 max-w-2xl mx-auto">
-        Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.
-      </p>
-
-      
-      <!-- Swiper Slider -->
-      <div class="swiper mySwiper max-w-4xl mx-auto rounded-lg overflow-hidden shadow-lg" aria-label="Weight loss images slideshow" role="region">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">
-            <img src="1.png" alt="Weight Loss Image 1" class="w-full h-64 sm:h-80 object-cover" loading="lazy" />
-          </div>
-          <div class="swiper-slide">
-            <img src="2.png" alt="Weight Loss Image 2" class="w-full h-64 sm:h-80 object-cover" loading="lazy" />
-          </div>
-          <div class="swiper-slide">
-            <img src="3.png" alt="Weight Loss Image 3" class="w-full h-64 sm:h-80 object-cover" loading="lazy" />
-          </div>
-          <div class="swiper-slide">
-            <img src="4.png" alt="Weight Loss Image 4" class="w-full h-64 sm:h-80 object-cover" loading="lazy" />
+    <!-- Hero Section with Slideshow Left -->
+    <section
+      class="bg-blue-100 py-12 px-4 sm:py-16 sm:px-6"
+      data-aos="fade-up"
+      aria-label="Hero section"
+    >
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
+        <!-- Slideshow Left -->
+        <div class="w-full md:w-1/2 rounded-lg overflow-hidden shadow-lg">
+          <div
+            class="swiper mySwiper"
+            aria-label="Weight loss images slideshow"
+            role="region"
+          >
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <img
+                  src="1.png"
+                  alt="Weight Loss Image 1"
+                  class="w-full h-80 object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div class="swiper-slide">
+                <img
+                  src="2.png"
+                  alt="Weight Loss Image 2"
+                  class="w-full h-80 object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div class="swiper-slide">
+                <img
+                  src="3.png"
+                  alt="Weight Loss Image 3"
+                  class="w-full h-80 object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div class="swiper-slide">
+                <img
+                  src="4.png"
+                  alt="Weight Loss Image 4"
+                  class="w-full h-80 object-cover"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div
+              class="swiper-pagination mt-2"
+              tabindex="0"
+              aria-label="Swiper pagination"
+            ></div>
           </div>
         </div>
-        <div class="swiper-pagination mt-2" tabindex="0" aria-label="Swiper pagination"></div>
+
+        <!-- Text + Button Right -->
+        <div class="w-full md:w-1/2 text-center md:text-left">
+          <h1 class="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">
+            Weight Loss Medication Consultation
+          </h1>
+          <p class="text-base sm:text-lg mb-8 text-gray-700 max-w-xl mx-auto md:mx-0">
+            Begin a safe and clinically guided consultation to access Mounjaro weight loss injections.
+          </p>
+          <button
+            class="bg-green-700 hover:bg-green-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition"
+            type="button"
+            onclick="window.location.href='consultation.html'"
+            aria-label="Start your consultation"
+          >
+            Start Your Consultation
+          </button>
+        </div>
       </div>
     </section>
 
