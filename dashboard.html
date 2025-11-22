@@ -37,7 +37,7 @@
       padding: 1rem;
       background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     table {
       width: 100%;
@@ -53,11 +53,12 @@
       background-color: #f0f0f0;
       font-weight: bold;
     }
+
     .status {
       padding: 6px 10px;
       border-radius: 4px;
       color: white;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-transform: capitalize;
     }
     .status.pending { background: #fbbf24; }
@@ -68,12 +69,8 @@
 
     /* Mobile responsive */
     @media (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      th {
-        display: none;
-      }
+      table, thead, tbody, th, td, tr { display: block; }
+      th { display: none; }
       td {
         position: relative;
         padding-left: 50%;
@@ -95,11 +92,14 @@
 </head>
 
 <body>
+
+  <!-- HEADER -->
   <header>
     <h1>My Orders</h1>
     <button class="logout-btn" onclick="logout()">Logout</button>
   </header>
 
+  <!-- BODY -->
   <div class="container">
     <h2>Welcome! Here is your Purchase History</h2>
     <p id="loading">Loading your orders...</p>
@@ -119,12 +119,9 @@
   </div>
 
 <script>
-  // Check if user is logged in
+  // SESSION CHECK
   const customerId = localStorage.getItem("customer_id");
-
-  if (!customerId) {
-    window.location.href = "login.html";
-  }
+  if (!customerId) window.location.href = "login.html";
 
   async function loadOrders() {
     try {
@@ -136,10 +133,8 @@
         return;
       }
 
-      const orders = json.orders;
-
-      // Filter orders belonging to this customer
-      const myOrders = orders.filter(o => String(o.customer_id) === String(customerId));
+      const allOrders = json.orders;
+      const myOrders = allOrders.filter(o => String(o.customer_id) === String(customerId));
 
       const tbody = document.querySelector("#ordersTable tbody");
 
@@ -148,15 +143,16 @@
         return;
       }
 
+      // Show table
       document.getElementById("loading").style.display = "none";
       document.getElementById("ordersTable").style.display = "";
 
       myOrders.forEach(order => {
+        const tr = document.createElement("tr");
+
         const strength = order.answers?.mounjaro_strength || "-";
         const status = order.status || "pending";
         const dateFmt = new Date(order.created_at).toLocaleString();
-
-        const tr = document.createElement("tr");
 
         tr.innerHTML = `
           <td>${order.id}</td>
