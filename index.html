@@ -27,6 +27,7 @@
   <style>
     body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
 
+    /* HEADER */
     header {
       background: #064635;
       color: white;
@@ -39,7 +40,6 @@
       justify-content: space-between;
       align-items: center;
     }
-
     header a.brand {
       font-size: 1.8rem;
       font-weight: 700;
@@ -49,7 +49,6 @@
       color: white;
       text-decoration: none;
     }
-
     nav a, nav button {
       background: white;
       color: #064635;
@@ -61,13 +60,14 @@
     }
     nav a:hover, nav button:hover { background: #1a7c3e; color: white; }
 
-    /* Dropdown */
     #dropdown-menu { display: none; }
     #dropdown-menu.show { display: block; }
   </style>
 </head>
 
 <body class="bg-gray-100">
+
+<!-- HEADER -->
 <header>
   <a href="index.html" class="brand">
     <img src="logo.jpeg" alt="PharmaLogic Logo" style="height:50px">
@@ -90,6 +90,7 @@
   </nav>
 </header>
 
+
 <script>
   document.getElementById("account-btn").addEventListener("click", () => {
     document.getElementById("dropdown-menu").classList.toggle("show");
@@ -109,93 +110,124 @@
   });
 </script>
 
-<!-- HERO (Slideshow Removed - Clean Static Banner) -->
-<section class="pt-32 pb-20 px-4 bg-blue-50" data-aos="fade-up">
-  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 items-center">
 
-    <!-- Static Image -->
-    <div class="rounded-xl overflow-hidden shadow-lg">
-      <img src="hero-static.png" alt="Weight Loss Consultation" class="w-full h-80 object-cover">
-    </div>
 
-    <!-- Text Area -->
+<!-- HERO SECTION (Gradient + Illustration + Trust Badges) -->
+<section class="pt-32 pb-20 px-4 bg-gradient-to-br from-blue-50 to-blue-100" data-aos="fade-up">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+
+    <!-- TEXT -->
     <div>
-      <h1 class="text-4xl font-bold text-blue-900 leading-tight mb-4">
+      <h1 class="text-4xl md:text-5xl font-bold text-blue-900 leading-tight mb-5">
         Mounjaro Weight Loss Consultation
       </h1>
-      <p class="text-lg text-gray-700 mb-6">
-        Begin your safe consultation and get reviewed by a GPhC-licensed pharmacist.
+
+      <p class="text-lg md:text-xl text-gray-700 mb-8">
+        Start a safe, secure, clinically assessed consultation to access
+        <strong>Mounjaro weight loss injections</strong> in the UK.
       </p>
+
       <button onclick="location.href='consultation.html'"
-        class="bg-green-700 hover:bg-green-800 text-white px-6 py-3 rounded-lg shadow font-semibold">
+        class="bg-green-700 hover:bg-green-800 text-white px-8 py-4 rounded-lg shadow-lg font-semibold text-lg transition">
         Start Consultation
       </button>
+
+      <!-- TRUST BADGES -->
+      <div class="flex flex-wrap gap-6 mt-10 items-center">
+
+        <div class="flex items-center gap-3">
+          <img src="https://img.icons8.com/fluency/48/approval.png" class="h-10">
+          <p class="font-semibold text-gray-700">GPhC Registered</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <img src="https://img.icons8.com/color/48/lock.png" class="h-10">
+          <p class="font-semibold text-gray-700">Secure & Encrypted</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/64/000000/external-pharmacy-medical-flatart-icons-outline-flatarticons.png" class="h-10">
+          <p class="font-semibold text-gray-700">UK Pharmacy</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ILLUSTRATION -->
+    <div class="flex justify-center">
+      <img src="hero-illustration.png"
+           alt="Medical Consultation Illustration"
+           class="w-full max-w-md drop-shadow-xl rounded-xl">
     </div>
 
   </div>
 </section>
+
 
 
 <!-- HOW IT WORKS -->
-<section class="py-16 bg-white" data-aos="fade-up">
-  <h2 class="text-3xl font-bold text-center text-blue-900 mb-12">How It Works</h2>
-  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 px-4">
+<section class="py-20 bg-white" data-aos="fade-up">
+  <h2 class="text-3xl font-bold text-center text-blue-900 mb-14">How It Works</h2>
 
-    <div class="bg-blue-50 p-6 rounded-xl shadow text-center" data-aos="zoom-in">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-10 px-4">
+
+    <div class="bg-blue-50 p-8 rounded-xl shadow text-center" data-aos="zoom-in">
       <img src="https://img.icons8.com/ios-filled/100/survey.png" class="mx-auto mb-4 h-16">
       <h3 class="font-semibold text-xl mb-2">1. Consultation</h3>
-      <p class="text-gray-600">Answer clinically required questions.</p>
+      <p class="text-gray-600">Complete clinically required questions.</p>
     </div>
 
-    <div class="bg-blue-50 p-6 rounded-xl shadow text-center" data-aos="zoom-in" data-aos-delay="150">
+    <div class="bg-blue-50 p-8 rounded-xl shadow text-center" data-aos="zoom-in" data-aos-delay="150">
       <img src="https://img.icons8.com/ios-filled/100/id-verified.png" class="mx-auto mb-4 h-16">
       <h3 class="font-semibold text-xl mb-2">2. ID & Video Upload</h3>
-      <p class="text-gray-600">Upload ID and verification video.</p>
+      <p class="text-gray-600">Upload photo ID and verification video.</p>
     </div>
 
-    <div class="bg-blue-50 p-6 rounded-xl shadow text-center" data-aos="zoom-in" data-aos-delay="300">
+    <div class="bg-blue-50 p-8 rounded-xl shadow text-center" data-aos="zoom-in" data-aos-delay="300">
       <img src="https://img.icons8.com/ios-filled/100/doctor-male.png" class="mx-auto mb-4 h-16">
       <h3 class="font-semibold text-xl mb-2">3. Pharmacist Review</h3>
-      <p class="text-gray-600">GPhC pharmacist assesses and dispatches.</p>
+      <p class="text-gray-600">A GPhC pharmacist reviews and approves.</p>
     </div>
 
   </div>
 </section>
 
 
+
 <!-- PRODUCTS -->
-<section class="py-16 bg-gray-50">
-  <h2 class="text-3xl font-bold text-center text-blue-900 mb-10">Available Strengths</h2>
+<section class="py-20 bg-gray-50">
+  <h2 class="text-3xl font-bold text-center text-blue-900 mb-14">Available Strengths</h2>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-6xl mx-auto px-4">
 
-    <a href="product-2-5mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 2.5mg-pen.jpg" class="h-40 mx-auto object-contain mb-3">
+    <!-- PRODUCT CARDS -->
+    <a href="product-2-5mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 2.5mg-pen.jpg" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 2.5mg – £115</p>
     </a>
 
-    <a href="product-5mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 5mg-pen.jpg" class="h-40 mx-auto object-contain mb-3">
+    <a href="product-5mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 5mg-pen.jpg" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 5mg – £145</p>
     </a>
 
-    <a href="product-7-5mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 7.5mg-pen.jpg" class="h-40 mx-auto object-contain mb-3">
+    <a href="product-7-5mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 7.5mg-pen.jpg" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 7.5mg – £170</p>
     </a>
 
-    <a href="product-10mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 10mg-pen.jpeg" class="h-40 mx-auto object-contain mb-3">
+    <a href="product-10mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 10mg-pen.jpeg" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 10mg – £185</p>
     </a>
 
-    <a href="product-12-5mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 12.5mg-pen.webp" class="h-40 mx-auto object-contain mb-3">
+    <a href="product-12-5mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 12.5mg-pen.webp" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 12.5mg – £200</p>
     </a>
 
-    <a href="product-15mg.html" class="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition">
-      <img src="mounjaro 15mg-pen.webp" class="h-40 mx-auto object-contain mb-3">
+    <a href="product-15mg.html" class="block bg-white p-6 rounded-xl shadow hover:shadow-xl transition">
+      <img src="mounjaro 15mg-pen.webp" class="h-40 mx-auto object-contain mb-4">
       <p class="text-center font-semibold text-blue-900">Mounjaro 15mg – £200</p>
     </a>
 
@@ -203,9 +235,10 @@
 </section>
 
 
+
 <!-- FOOTER -->
-<footer class="bg-green-900 text-white py-12">
-  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 px-4">
+<footer class="bg-green-900 text-white py-14">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 px-4">
 
     <div>
       <h3 class="text-lg font-bold mb-4">About Us</h3>
@@ -229,7 +262,7 @@
 
   </div>
 
-  <div class="text-center text-xs mt-10 border-t border-gray-700 pt-4">
+  <div class="text-center text-xs mt-12 border-t border-gray-700 pt-4">
     © 2024 MDS Healthcare Limited. All Rights Reserved.
   </div>
 </footer>
