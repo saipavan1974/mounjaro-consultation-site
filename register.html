@@ -5,123 +5,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PharmaLogic - Register</title>
 
-  <meta name="description" content="Create your PharmaLogic account for weight loss consultation and orders." />
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#064635" />
-
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100">
 
-  <!-- Header -->
-  <header class="bg-green-900 text-white px-6 py-4 flex justify-between items-center fixed w-full top-0 z-50">
-    <a href="index.html" class="flex items-center gap-2 font-bold text-xl">
-      <img src="logo.jpeg" alt="logo" class="h-10" />
-      PharmaLogic
-    </a>
-    <nav class="flex gap-4">
-      <a href="index.html" class="bg-white text-green-900 px-4 py-2 rounded font-semibold">Home</a>
-      <a href="product.html" class="bg-white text-green-900 px-4 py-2 rounded font-semibold">Product</a>
-    </nav>
-  </header>
+<header class="bg-green-900 text-white p-4 flex justify-between items-center fixed top-0 left-0 w-full z-50">
+  <a href="index.html" class="text-xl font-bold flex items-center gap-2">
+    <img src="logo.jpeg" class="h-10" /> PharmaLogic
+  </a>
+</header>
 
-  <!-- Main Content -->
-  <main class="max-w-md mx-auto mt-32 p-8 bg-white shadow rounded">
-    <h1 class="text-3xl font-bold text-green-900 mb-6 text-center">Create a PharmaLogic Account</h1>
+<main class="max-w-md mx-auto mt-32 bg-white p-8 rounded shadow">
+  <h1 class="text-3xl font-bold text-center text-green-900 mb-6">Create Account</h1>
 
-    <form id="registerForm" class="space-y-6">
+  <form id="register-form" class="space-y-6">
 
-      <div>
-        <label class="font-semibold">Full Name</label>
-        <input type="text" id="fullname" required
-          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
-      </div>
+    <div>
+      <label class="block text-gray-700 font-semibold mb-1">Full Name</label>
+      <input id="fullname" type="text" required class="w-full border p-2 rounded" />
+    </div>
 
-      <div>
-        <label class="font-semibold">Email</label>
-        <input type="email" id="email" required
-          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
-      </div>
+    <div>
+      <label class="block text-gray-700 font-semibold mb-1">Email</label>
+      <input id="email" type="email" required class="w-full border p-2 rounded" />
+    </div>
 
-      <div>
-        <label class="font-semibold">Password</label>
-        <input type="password" id="password" minlength="8" required
-          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
-      </div>
+    <div>
+      <label class="block text-gray-700 font-semibold mb-1">Password</label>
+      <input id="password" type="password" required minlength="8" class="w-full border p-2 rounded" />
+    </div>
 
-      <div>
-        <label class="font-semibold">Confirm Password</label>
-        <input type="password" id="password_confirm" minlength="8" required
-          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
-      </div>
+    <div>
+      <label class="block text-gray-700 font-semibold mb-1">Confirm Password</label>
+      <input id="password_confirm" type="password" required minlength="8" class="w-full border p-2 rounded" />
+    </div>
 
-      <p id="errorMessage" class="text-red-600 font-semibold hidden"></p>
-      <p id="successMessage" class="text-green-700 font-semibold hidden"></p>
+    <button 
+      type="submit"
+      class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 rounded">
+      Register
+    </button>
 
-      <button type="submit"
-        class="w-full bg-green-700 text-white py-3 text-lg rounded hover:bg-green-800 transition">
-        Register
-      </button>
-    </form>
+  </form>
 
-    <p class="mt-6 text-center">
-      Already have an account?
-      <a href="login.html" class="text-green-700 underline font-semibold">Login here</a>
-    </p>
-  </main>
+  <p id="register-message" class="text-center mt-4 font-semibold"></p>
 
-  <script>
-    document.getElementById("registerForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
+  <p class="mt-6 text-center">
+    Already have an account?
+    <a href="login.html" class="text-green-700 underline">Login</a>
+  </p>
+</main>
 
-      const full_name = document.getElementById("fullname").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const confirm = document.getElementById("password_confirm").value.trim();
+<script>
+document.getElementById("register-form").addEventListener("submit", async function(e){
+  e.preventDefault();
 
-      const errorBox = document.getElementById("errorMessage");
-      const successBox = document.getElementById("successMessage");
+  const fullname = document.getElementById("fullname").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const confirm = document.getElementById("password_confirm").value.trim();
+  const msg = document.getElementById("register-message");
 
-      errorBox.classList.add("hidden");
-      successBox.classList.add("hidden");
+  if (password !== confirm) {
+    msg.innerText = "Passwords do not match.";
+    msg.style.color = "red";
+    return;
+  }
 
-      // Password match check
-      if (password !== confirm) {
-        errorBox.textContent = "Passwords do not match.";
-        errorBox.classList.remove("hidden");
-        return;
-      }
+  msg.innerText = "Creating your account...";
+  msg.style.color = "black";
 
-      try {
-        const res = await fetch("/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ full_name, email, password })
-        });
-
-        const data = await res.json();
-
-        if (!data.success) {
-          errorBox.textContent = data.message || "Registration failed.";
-          errorBox.classList.remove("hidden");
-          return;
-        }
-
-        successBox.textContent = "Account created! Redirecting...";
-        successBox.classList.remove("hidden");
-
-        setTimeout(() => {
-          window.location.href = "login.html";
-        }, 1500);
-
-      } catch (err) {
-        errorBox.textContent = "Server error: " + err.message;
-        errorBox.classList.remove("hidden");
-      }
+  try {
+    const res = await fetch("/api/customer-register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fullname, email, password })
     });
-  </script>
+
+    const data = await res.json();
+
+    if (data.success) {
+      msg.innerText = "Account created! Redirecting to login...";
+      msg.style.color = "green";
+
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 1500);
+
+    } else {
+      msg.innerText = data.message || "Registration failed.";
+      msg.style.color = "red";
+    }
+
+  } catch(err) {
+    msg.innerText = "Server error. Try again.";
+    msg.style.color = "red";
+  }
+});
+</script>
 
 </body>
 </html>
