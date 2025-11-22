@@ -1,56 +1,38 @@
 import { neon } from "@netlify/neon";
-import bcrypt from "bcryptjs";
 
-export const handler = async (event) => {
+export async function handler(event, context) {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   try {
     const { email, password } = JSON.parse(event.body);
 
-    if (!email || !password) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ success: false, message: "Missing credentials" })
-      };
-    }
-
     const sql = neon();
 
-    // Get user by email
-    const rows = await sql`
-      SELECT id, password_hash FROM customers WHERE email = ${email}
+    const user = await sql`
+      SELECT * FROM customers WHERE email = ${email} AND password = ${password}
     `;
 
-    if (rows.length === 0) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ success: false, message: "Account not found" })
-      };
-    }
-
-    const user = rows[0];
-
-    // Compare passwords
-    const valid = await bcrypt.compare(password, user.password_hash);
-
-    if (!valid) {
+    if (user.length === 0) {
       return {
         statusCode: 401,
-        body: JSON.stringify({ success: false, message: "Incorrect password" })
+        body: JSON.stringify({ success: false, message: "Invalid credentials" }),
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true, customer_id: user.id })
+      body: JSON.stringify({
+        success: true,
+        user: user[0],
+      }),
     };
 
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, message: err.message })
+      body: JSON.stringify({ success: false, message: err.message }),
     };
   }
-};
+}
