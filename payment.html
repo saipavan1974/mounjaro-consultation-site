@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pharmalogic - Mounjaro weight loss Injection</title>
+  <title>PharmaLogic - Secure Payment</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,101 +17,108 @@
       background: white;
       padding: 2rem;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 15px rgba(0,0,0,0.12);
     }
-    h1, h2 {
-      color: #333;
-    }
-    button {
+    h1, h2 { color: #333; }
+    .btn {
       background-color: #1a73e8;
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 20px;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 1rem;
       margin-top: 1rem;
-    }
-    form input {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      box-sizing: border-box;
+    }
+    .btn:hover { background-color: #0d5ec7; }
+    .info-box {
+      background: #eef6ff;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      border-left: 4px solid #1a73e8;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
-    <h1>Buy Mounjaro 2.5mg Weight Loss Injection</h1>
-    <p><strong>Price:</strong> £125.00 (Monthly Pack)</p>
-    <p>Mounjaro weight loss injection is a fast-acting monthly weight loss solution. Recommended by certified pharmacists and clinically tested.</p>
+    
+    <h1>Mounjaro Weight Loss Injection</h1>
+    <p><strong>Price:</strong> £125.00</p>
 
-    <hr />
+    <div id="order-box" class="info-box">
+      Retrieving your consultation details...
+    </div>
 
-    <h2>Submit Your Info</h2>
-    <p>(For prescription and follow-up communication)</p>
+    <h2 class="mt-4">Complete Payment</h2>
+    <p>Click below to go to our secure payment portal.</p>
 
-    <form id="customer-form">
-      <input type="text" name="full_name" placeholder="Full Name" required />
-      <input type="email" name="email" placeholder="Email Address" required />
-      <button type="submit">Submit Info & Buy Now</button>
-    </form>
+    <button id="pay-now" class="btn">Pay Securely</button>
 
-    <p id="form-response" style="margin-top:1rem;"></p>
+    <p id="status-message" style="margin-top:1rem;"></p>
+
   </div>
 
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  // Read ORDER ID from URL:
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("order_id");
 
-  <script>
-    // ✅ Your Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD4RMS3cZEcwcxmEK2mfCH6uS9fP_uz3-A",
-      authDomain: "pharmalogic-weightloss-cfbf2.firebaseapp.com",
-      projectId: "pharmalogic-weightloss-cfbf2",
-      storageBucket: "pharmalogic-weightloss-cfbf2.appspot.com",
-      messagingSenderId: "508838130812",
-      appId: "1:508838130812:web:09888169609b9b361245f9"
-    };
+  const orderBox = document.getElementById("order-box");
+  const payButton = document.getElementById("pay-now");
+  const statusMessage = document.getElementById("status-message");
 
-    // ✅ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+  if (!orderId) {
+    orderBox.innerHTML = "<span style='color:red'>❌ Error: Missing order ID.</span>";
+    payButton.disabled = true;
+  } else {
+    orderBox.innerHTML = `
+      <strong>Order ID:</strong> ${orderId}<br>
+      Your consultation was submitted successfully.<br>
+      Please proceed to secure payment.
+    `;
+  }
 
-    const form = document.getElementById('customer-form');
-    const responseText = document.getElementById('form-response');
+  /**********************
+   * PAYMENT BUTTON CLICK
+   **********************/
+  payButton.addEventListener("click", async () => {
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    statusMessage.innerText = "Redirecting to payment...";
+    statusMessage.style.color = "black";
 
-      const fullName = form.full_name.value.trim();
-      const email = form.email.value.trim();
+    // 👉 Redirect customer to Stripe Checkout
+    window.location.href = "https://buy.stripe.com/test_14A00lcfU1gH7b838k3cc00";
 
-      if (!fullName || !email) {
-        responseText.innerText = "❌ Please fill in all fields.";
-        responseText.style.color = "red";
-        return;
-      }
+    // OPTIONAL: If you want to mark order as paid only AFTER Stripe returns
+    // We can handle a success URL later.
 
-      try {
-        await db.collection('customers').add({
-          full_name: fullName,
-          email: email,
-          submitted_at: new Date()
-        });
+    // 👉 Mark order as PAID in your backend
+    try {
+      await fetch("/api/update-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order_id: orderId,
+          status: "Paid"
+        })
+      });
 
-        responseText.innerText = "✅ Info submitted! Redirecting to payment...";
-        responseText.style.color = "green";
+      statusMessage.innerText = "✓ Payment recorded. Redirecting...";
+      statusMessage.style.color = "green";
 
-        setTimeout(() => {
-          window.location.href = "https://buy.stripe.com/test_14A00lcfU1gH7b838k3cc00";
-        }, 1500);
-      } catch (error) {
-        console.error("Firestore Error:", error);
-        responseText.innerText = "❌ Error saving data. Please try again.";
-        responseText.style.color = "red";
-      }
-    });
-  </script>
+      setTimeout(() => {
+        window.location.href = "order-success.html?order_id=" + orderId;
+      }, 1500);
+
+    } catch (error) {
+      statusMessage.innerText = "❌ Error updating payment status.";
+      statusMessage.style.color = "red";
+    }
+  });
+</script>
+
 </body>
 </html>
