@@ -58,6 +58,7 @@
       border-radius: 4px;
       color: white;
       font-size: 0.9rem;
+      text-transform: capitalize;
     }
     .status.pending { background: #fbbf24; }
     .status.approved { background: #10b981; }
@@ -85,7 +86,7 @@
         font-weight: bold;
       }
       td:nth-of-type(1):before { content: "Order ID"; }
-      td:nth-of-type(2):before { content: "Product"; }
+      td:nth-of-type(2):before { content: "Strength"; }
       td:nth-of-type(3):before { content: "Price (£)"; }
       td:nth-of-type(4):before { content: "Status"; }
       td:nth-of-type(5):before { content: "Date"; }
@@ -107,7 +108,7 @@
       <thead>
         <tr>
           <th>Order ID</th>
-          <th>Product</th>
+          <th>Strength</th>
           <th>Price (£)</th>
           <th>Status</th>
           <th>Date</th>
@@ -128,10 +129,17 @@
   async function loadOrders() {
     try {
       const res = await fetch("/api/get-orders");
-      const orders = await res.json();
+      const json = await res.json();
+
+      if (!json.success) {
+        document.getElementById("loading").innerText = "Error loading orders.";
+        return;
+      }
+
+      const orders = json.orders;
 
       // Filter orders belonging to this customer
-      const myOrders = orders.filter(o => o.customer_id == customerId);
+      const myOrders = orders.filter(o => String(o.customer_id) === String(customerId));
 
       const tbody = document.querySelector("#ordersTable tbody");
 
@@ -144,14 +152,18 @@
       document.getElementById("ordersTable").style.display = "";
 
       myOrders.forEach(order => {
+        const strength = order.answers?.mounjaro_strength || "-";
+        const status = order.status || "pending";
+        const dateFmt = new Date(order.created_at).toLocaleString();
+
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
           <td>${order.id}</td>
-          <td>${order.answers?.mounjaro_strength || "-"}</td>
-          <td>125</td>
-          <td><span class="status ${order.status || "pending"}">${order.status || "pending"}</span></td>
-          <td>${new Date(order.created_at).toLocaleString()}</td>
+          <td>${strength}</td>
+          <td>£${order.price || 125}</td>
+          <td><span class="status ${status}">${status}</span></td>
+          <td>${dateFmt}</td>
         `;
 
         tbody.appendChild(tr);
@@ -166,6 +178,7 @@
 
   function logout() {
     localStorage.removeItem("customer_id");
+    localStorage.removeItem("customer_name");
     window.location.href = "login.html";
   }
 </script>
