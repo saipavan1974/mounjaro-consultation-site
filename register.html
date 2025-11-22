@@ -5,297 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PharmaLogic - Register</title>
 
-  <!-- SEO Meta Tags -->
   <meta name="description" content="Create your PharmaLogic account for weight loss consultation and orders." />
-  <meta name="author" content="PharmaLogic" />
   <meta name="robots" content="noindex, nofollow" />
-
-  <!-- Theme color for mobile browsers -->
   <meta name="theme-color" content="#064635" />
 
-  <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-  <!-- Tailwind & AOS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-  <style>
-    /* Skip link styling */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: #064635;
-      color: white;
-      padding: 8px 16px;
-      z-index: 1001;
-      transition: top 0.3s ease;
-      font-weight: 700;
-      text-decoration: none;
-    }
-    .skip-link:focus {
-      top: 0;
-      outline: 2px solid #fff;
-      outline-offset: 2px;
-    }
-
-    header {
-      background: #064635;
-      color: white;
-      padding: 1.5rem 5rem;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      z-index: 1000;
-    }
-    header a.brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      font-size: 1.8rem;
-      color: white;
-      text-decoration: none;
-    }
-    header a.brand img {
-      height: 50px;
-      width: auto;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    nav a, nav button {
-      background: white;
-      color: #064635;
-      font-weight: 600;
-      padding: 0.5rem 1.5rem;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
-    nav a:hover, nav button:hover, nav a:focus, nav button:focus {
-      background: #1a7c3e;
-      color: white;
-      outline: none;
-    }
-
-    body {
-      padding-top: 110px;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f3f4f6; /* Tailwind gray-100 */
-    }
-
-    /* Responsive adjustments for nav on smaller screens */
-    @media (max-width: 640px) {
-      header {
-        padding: 1rem 1.5rem;
-      }
-      nav {
-        gap: 0.5rem;
-      }
-    }
-  </style>
 </head>
 
 <body class="bg-gray-100 font-sans">
-  <!-- Skip to main content link for keyboard users -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Header -->
-  <header>
-    <a href="index.html" class="brand" aria-label="PharmaLogic Home">
-      <img src="logo.jpeg" alt="PharmaLogic Logo" loading="lazy" />
+  <header class="bg-green-900 text-white px-6 py-4 flex justify-between items-center fixed w-full top-0 z-50">
+    <a href="index.html" class="flex items-center gap-2 font-bold text-xl">
+      <img src="logo.jpeg" alt="logo" class="h-10" />
       PharmaLogic
     </a>
-    <nav role="navigation" aria-label="Primary Navigation" class="flex gap-4 items-center">
-      <a href="index.html">Home</a>
-      <button type="button" onclick="window.location.href='product.html'">Product</button>
-
-      <!-- User Account Dropdown -->
-      <div class="relative" id="account-dropdown">
-        <button
-          id="account-btn"
-          class="bg-white text-green-900 font-semibold py-2 px-4 rounded hover:bg-green-800 hover:text-white transition"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-controls="dropdown-menu"
-          type="button"
-          onclick="toggleDropdown()"
-        >
-          Account
-        </button>
-        <div
-          id="dropdown-menu"
-          class="absolute right-0 mt-2 hidden bg-white rounded-lg shadow-lg z-50 w-40 text-left"
-          role="menu"
-          aria-labelledby="account-btn"
-        >
-          <a href="login.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Login</a>
-          <a href="register.html" class="block px-4 py-2 hover:bg-green-100 text-green-900" role="menuitem" tabindex="-1">Register</a>
-        </div>
-      </div>
+    <nav class="flex gap-4">
+      <a href="index.html" class="bg-white text-green-900 px-4 py-2 rounded font-semibold">Home</a>
+      <a href="product.html" class="bg-white text-green-900 px-4 py-2 rounded font-semibold">Product</a>
     </nav>
   </header>
 
   <!-- Main Content -->
-  <main id="main-content" class="max-w-md mx-auto my-12 p-8 bg-white rounded shadow-lg" role="main" aria-label="Register form">
+  <main class="max-w-md mx-auto mt-32 p-8 bg-white shadow rounded">
     <h1 class="text-3xl font-bold text-green-900 mb-6 text-center">Create a PharmaLogic Account</h1>
-    <form action="/your-register-endpoint" method="POST" class="space-y-6" novalidate>
+
+    <form id="registerForm" class="space-y-6">
+
       <div>
-        <label for="fullname" class="block text-gray-700 font-semibold mb-1">Full Name</label>
-        <input
-          type="text"
-          id="fullname"
-          name="fullname"
-          required
-          placeholder="Your full name"
-          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
-          autocomplete="name"
-        />
+        <label class="font-semibold">Full Name</label>
+        <input type="text" id="fullname" required
+          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
       </div>
+
       <div>
-        <label for="email" class="block text-gray-700 font-semibold mb-1">Email address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          placeholder="you@example.com"
-          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
-          autocomplete="email"
-        />
+        <label class="font-semibold">Email</label>
+        <input type="email" id="email" required
+          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
       </div>
+
       <div>
-        <label for="password" class="block text-gray-700 font-semibold mb-1">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          placeholder="Create a password"
-          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
-          autocomplete="new-password"
-          minlength="8"
-        />
+        <label class="font-semibold">Password</label>
+        <input type="password" id="password" minlength="8" required
+          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
       </div>
+
       <div>
-        <label for="password_confirm" class="block text-gray-700 font-semibold mb-1">Confirm Password</label>
-        <input
-          type="password"
-          id="password_confirm"
-          name="password_confirm"
-          required
-          placeholder="Confirm your password"
-          class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-green-700"
-          autocomplete="new-password"
-          minlength="8"
-        />
+        <label class="font-semibold">Confirm Password</label>
+        <input type="password" id="password_confirm" minlength="8" required
+          class="w-full mt-1 p-3 border rounded focus:ring-2 focus:ring-green-600" />
       </div>
-      <button
-        type="submit"
-        class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 rounded shadow-md transition"
-        aria-label="Submit registration form"
-      >
+
+      <p id="errorMessage" class="text-red-600 font-semibold hidden"></p>
+      <p id="successMessage" class="text-green-700 font-semibold hidden"></p>
+
+      <button type="submit"
+        class="w-full bg-green-700 text-white py-3 text-lg rounded hover:bg-green-800 transition">
         Register
       </button>
     </form>
-    <p class="mt-6 text-center text-gray-600">
+
+    <p class="mt-6 text-center">
       Already have an account?
-      <a href="login.html" class="text-green-700 hover:text-green-900 font-semibold underline">Login here</a>
+      <a href="login.html" class="text-green-700 underline font-semibold">Login here</a>
     </p>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-green-900 text-white py-12 px-4 sm:px-6" role="contentinfo">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
-      <div>
-        <h3 class="text-lg font-semibold mb-4">About Us</h3>
-        <p class="text-sm leading-relaxed">
-          Founded in 2009, Pharmalogic has developed and specialised in becoming the first healthcare group to establish a dedicated care home service, alongside our independent, family-run, community chemists throughout the NorthWest region.
-          <br /><br />
-          Our Superintendent Pharmacist is Haroon Amanji (Reg. No. 2070534)
-        </p>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-4">Head Office</h3>
-        <address class="not-italic text-sm">
-          <strong>Address</strong><br />
-          464 Ranglet Road<br />
-          Walton Summit Centre<br />
-          Preston<br />
-          PR5 8AR<br /><br />
-          <strong>Tel</strong><br />
-          <a href="tel:+441772620526" class="text-white underline hover:text-green-300">+44 (0) 1772 620526</a><br /><br />
-          <strong>Fax</strong><br />
-          +44 (0) 1772 697328<br /><br />
-          <strong>Email</strong><br />
-          <a href="mailto:info@pharmalogic.co.uk" class="text-white underline hover:text-green-300">info@pharmalogic.co.uk</a>
-        </address>
-      </div>
-    </div>
-    <div class="text-center text-xs mt-10 border-t border-gray-700 pt-4" role="contentinfo">
-      All Rights Reserved. MDS Healthcare Limited. Copyright 2020–2024 ©<br />
-      464 Ranglet Road, Walton Summit Centre, Preston PR5 8AR Tel: 01772 620526
-    </div>
-  </footer>
-
-  <!-- AOS Init -->
   <script>
-    AOS.init();
-  </script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  <!-- Dropdown Script -->
-  <script>
-    function toggleDropdown() {
-      const menu = document.getElementById('dropdown-menu');
-      const btn = document.getElementById('account-btn');
-      const isHidden = menu.classList.contains('hidden');
+      const full_name = document.getElementById("fullname").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const confirm = document.getElementById("password_confirm").value.trim();
 
-      if (isHidden) {
-        menu.classList.remove('hidden');
-        btn.setAttribute('aria-expanded', 'true');
-      } else {
-        menu.classList.add('hidden');
-        btn.setAttribute('aria-expanded', 'false');
+      const errorBox = document.getElementById("errorMessage");
+      const successBox = document.getElementById("successMessage");
+
+      errorBox.classList.add("hidden");
+      successBox.classList.add("hidden");
+
+      // Password match check
+      if (password !== confirm) {
+        errorBox.textContent = "Passwords do not match.";
+        errorBox.classList.remove("hidden");
+        return;
       }
-    }
 
-    window.addEventListener('click', (event) => {
-      const dropdown = document.getElementById('account-dropdown');
-      const btn = document.getElementById('account-btn');
-      const menu = document.getElementById('dropdown-menu');
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ full_name, email, password })
+        });
 
-      if (!dropdown.contains(event.target)) {
-        menu.classList.add('hidden');
-        btn.setAttribute('aria-expanded', 'false');
-      }
-    });
+        const data = await res.json();
 
-    window.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        const menu = document.getElementById('dropdown-menu');
-        const btn = document.getElementById('account-btn');
-        if (!menu.classList.contains('hidden')) {
-          menu.classList.add('hidden');
-          btn.setAttribute('aria-expanded', 'false');
-          btn.focus();
+        if (!data.success) {
+          errorBox.textContent = data.message || "Registration failed.";
+          errorBox.classList.remove("hidden");
+          return;
         }
+
+        successBox.textContent = "Account created! Redirecting...";
+        successBox.classList.remove("hidden");
+
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+
+      } catch (err) {
+        errorBox.textContent = "Server error: " + err.message;
+        errorBox.classList.remove("hidden");
       }
     });
   </script>
+
 </body>
 </html>
