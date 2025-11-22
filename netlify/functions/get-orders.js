@@ -4,17 +4,33 @@ export const handler = async () => {
   try {
     const sql = neon();
 
-    const rows = await sql`
-      SELECT * FROM orders
+    // Fetch all orders sorted by newest
+    const orders = await sql`
+      SELECT *
+      FROM orders
       ORDER BY created_at DESC;
     `;
 
     return {
       statusCode: 200,
-      body: JSON.stringify(rows),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        success: true,
+        orders: orders
+      }),
     };
 
   } catch (err) {
-    return { statusCode: 500, body: err.toString() };
+    console.error("GET-ORDERS ERROR:", err);
+
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        success: false,
+        message: "Failed to load orders.",
+        error: err.message
+      }),
+    };
   }
 };
